@@ -1,7 +1,7 @@
 <?php
 /**
  * Collect missing translations in specified folder or the entire Magento 2 Root
- * Copyright (C) 2016 Lewis Voncken
+ * Copyright (C) 2016 Experius
  *
  * This file included in Experius/MissingTranslations is licensed under OSL 3.0
  *
