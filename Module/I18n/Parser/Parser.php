@@ -46,7 +46,7 @@ class Parser extends AbstractParser
     {
 	    try {
             $foundTranslation = $this->_translatePhrase($phraseData['phrase']);
-            if ($foundTranslation) {
+            if ($foundTranslation == false) {
                 $phrase = $this->_factory->createPhrase([
                     'phrase' => $phraseData['phrase'],
                     'translation' => $foundTranslation,
