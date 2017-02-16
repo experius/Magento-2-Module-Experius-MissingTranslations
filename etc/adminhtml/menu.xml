@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Experius::translations" title="Translations" module="Experius_MissingTranslations" sortOrder="50" parent="Magento_Backend::stores" dependsOnModule="Magento_Backend" resource="Magento_Backend::content"/>
+        <add action="experius_missingtranslations/translation/index" id="Experius::experius_translation" module="Experius_MissingTranslations" parent="Experius::translations" resource="Magento_Backend::content" sortOrder="9999" title="Database / Inline"/>
+    </menu>
+</config>
