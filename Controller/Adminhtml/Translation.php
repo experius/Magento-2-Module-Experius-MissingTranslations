@@ -36,7 +36,7 @@ abstract class Translation extends \Magento\Backend\App\Action
      */
     public function initPage($resultPage)
     {
-        $resultPage->setActiveMenu('Experius_MissingTranslations::experius_shipping_tablerate')
+        $resultPage->setActiveMenu('Experius::experius_translation')
             ->addBreadcrumb(__('Experius'), __('Experius'))
             ->addBreadcrumb(__('Translation'), __('Translation'));
         return $resultPage;
