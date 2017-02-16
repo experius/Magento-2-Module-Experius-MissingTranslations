@@ -81,11 +81,12 @@ class Generator
      * @throws \UnexpectedValueException
      * @return void
      */
-    public function generate($directory, $outputFilename, $withContext = false)
+    public function generate($directory, $outputFilename, $withContext = false, $locale = 'en_US')
     {
         $optionResolver = $this->optionResolverFactory->create($directory, $withContext);
 
         $parser = $this->getActualParser($withContext);
+        $parser->loadTranslations($locale);
         $parser->parse($optionResolver->getOptions());
 
         $phraseList = $parser->getPhrases();

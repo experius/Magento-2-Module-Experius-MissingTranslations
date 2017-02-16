@@ -63,8 +63,6 @@ abstract class AbstractParser implements I18n\ParserInterface
     {
         $this->_filesCollector = $filesCollector;
         $this->_factory = $factory;
-
-        $this->loadTranslations();
     }
 
     /**
@@ -148,7 +146,7 @@ abstract class AbstractParser implements I18n\ParserInterface
     /**
      * Load all Frontend Translations
      */
-    public function loadTranslations()
+    public function loadTranslations($locale = 'en_US')
     {
         $objectManager = ObjectManager::getInstance();
         $resolver = $objectManager->get('Magento\Framework\Locale\Resolver');
@@ -156,6 +154,7 @@ abstract class AbstractParser implements I18n\ParserInterface
         $translator = $objectManager->get('Magento\Framework\Phrase\Renderer\Translate');
 
         $translatorInterface = $objectManager->get('Magento\Framework\TranslateInterface');
+        $translatorInterface->setLocale($locale);
         $translatorInterface->loadData('frontend',true);
         $this->_translations = $translatorInterface->getData();
     }

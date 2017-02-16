@@ -26,6 +26,8 @@ class CollectMissingTranslationsCommand extends Command
     const SHORTCUT_KEY_OUTPUT = 'o';
     const INPUT_KEY_MAGENTO = 'magento';
     const SHORTCUT_KEY_MAGENTO = 'm';
+    const INPUT_KEY_LOCALE = 'locale';
+    const SHORTCUT_KEY_LOCALE = 'l';
     const INPUT_KEY_STORE = 'store';
     const SHORTCUT_KEY_STORE = 's';
 
@@ -74,7 +76,8 @@ class CollectMissingTranslationsCommand extends Command
         $generator->generate(
             $directory,
             $input->getOption(self::INPUT_KEY_OUTPUT),
-            $input->getOption(self::INPUT_KEY_MAGENTO)
+            $input->getOption(self::INPUT_KEY_MAGENTO),
+            $input->getOption(self::INPUT_KEY_LOCALE)
         );
         $this->emulation->stopEnvironmentEmulation();
         $output->writeln('<info>Collected Missing Translations for specified store</info>');
@@ -86,7 +89,7 @@ class CollectMissingTranslationsCommand extends Command
     protected function configure()
     {
         $this->setName("experius_missingtranslations:collect");
-        $this->setDescription('Collect all missing translations by the language of the given store.');
+        $this->setDescription('Collect all missing translations by the language code.');
         $this->setDefinition([
             new InputArgument(
                 self::INPUT_KEY_DIRECTORY,
@@ -107,11 +110,16 @@ class CollectMissingTranslationsCommand extends Command
                 ' Omit the parameter if a directory is specified.'
             ),
             new InputOption(
+                self::INPUT_KEY_LOCALE,
+                self::SHORTCUT_KEY_LOCALE,
+                InputOption::VALUE_REQUIRED,
+                'Use the --locale parameter to parse specific language.'
+            ),
+            new InputOption(
                 self::INPUT_KEY_STORE,
                 self::SHORTCUT_KEY_STORE,
-                InputOption::VALUE_REQUIRED,
-                'Use the --store parameter to parse store.' .
-                ' Omit the parameter if a directory is specified.'
+                InputArgument::OPTIONAL,
+                'Use the --store parameter to parse store. (for DB translation check)'
             ),
         ]);
         parent::configure();
