@@ -38,6 +38,7 @@ class Index extends \Magento\Backend\App\Action
     public function execute()
     {
         $resultPage = $this->resultPageFactory->create();
+        $resultPage->setActiveMenu('Experius::experius_translation');
             $resultPage->getConfig()->getTitle()->prepend(__("Database Translations"));
             return $resultPage;
     }
