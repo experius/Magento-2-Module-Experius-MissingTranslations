@@ -1,0 +1,25 @@
+{
+  "name": "experius/module-missingtranslations",
+  "description": "Collect missing translations in specified folder or the entire Magento 2 Root",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Mage2Gen",
+      "email": "info@mage2gen.com"
+    },
+    {
+      "name": "Mr. Lewis",
+      "email": "lewis@experius.nl"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "Experius\\MissingTranslations\\": ""
+    },
+    "files": [
+      "registration.php"
+    ]
+  }
+}
