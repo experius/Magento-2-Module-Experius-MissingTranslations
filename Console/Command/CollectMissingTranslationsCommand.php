@@ -1,4 +1,13 @@
 <?php
+/**
+ * Collect missing translations in specified folder or the entire Magento 2 Root
+ * Copyright (C) 2016 Lewis Voncken
+ *
+ * This file included in Experius/MissingTranslations is licensed under OSL 3.0
+ *
+ * http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * Please see LICENSE.txt for the full text of the OSL 3.0 license
+ */
 
 namespace Experius\MissingTranslations\Console\Command;
 
@@ -7,7 +16,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Magento\Framework\App\ObjectManager;
 use Experius\MissingTranslations\Module\I18n\ServiceLocator;
 
 class CollectMissingTranslationsCommand extends Command
@@ -20,6 +28,30 @@ class CollectMissingTranslationsCommand extends Command
     const SHORTCUT_KEY_MAGENTO = 'm';
     const INPUT_KEY_STORE = 'store';
     const SHORTCUT_KEY_STORE = 's';
+
+    /**
+     * @var Magento\Store\Model\App\Emulation
+     */
+    protected $emulation;
+
+    /**
+     * @var Magento\Framework\App\State
+     */
+    protected $state;
+
+    /**
+     * CollectMissingTranslationsCommand constructor.
+     * @param Magento\Store\Model\App\Emulation $emulation
+     * @param Magento\Framework\App\State $state
+     */
+    public function __construct(
+        \Magento\Store\Model\App\Emulation $emulation,
+        \Magento\Framework\App\State $state
+    ) {
+        $this->emulation = $emulation;
+        $this->state = $state;
+        parent::__construct();
+    }
 
     /**
      * {@inheritdoc}
@@ -37,18 +69,14 @@ class CollectMissingTranslationsCommand extends Command
             throw new \InvalidArgumentException('Directory path is needed when --magento flag is not set.');
         }
         $generator = ServiceLocator::getDictionaryGenerator();
-        $objectManager = ObjectManager::getInstance();
-        $emulation = $objectManager->create('\Magento\Store\Model\App\Emulation');
-        $appState = $objectManager->get('Magento\Framework\App\State');
-        $appState->setAreaCode('frontend');
-        $emulation->startEnvironmentEmulation($input->getOption(self::INPUT_KEY_STORE));
+        $this->state->setAreaCode('frontend');
+        $this->emulation->startEnvironmentEmulation($input->getOption(self::INPUT_KEY_STORE));
         $generator->generate(
             $directory,
             $input->getOption(self::INPUT_KEY_OUTPUT),
             $input->getOption(self::INPUT_KEY_MAGENTO)
-
         );
-        $emulation->stopEnvironmentEmulation();
+        $this->emulation->stopEnvironmentEmulation();
         $output->writeln('<info>Collected Missing Translations for specified store</info>');
     }
 
