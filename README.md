@@ -1,6 +1,6 @@
 # Mage2 Module Experius MissingTranslations
 
-Add a CLI command to Collect missing translations in specified folder or the entire Magento 2 Root
+Add a CLI command to Collect missing translations in specified folder or the entire Magento 2 Root and add Admin Grid to display and update database/inline translations (Stores > Translations > Database/Inline Translations)
 
 ``
 php bin/magento experius_missingtranslations:collect [-o|--output="..."] [-m|--magento] [-l|--locale="..."] [-s|--store="..."] [directory]
@@ -22,4 +22,3 @@ TO DO:
 
  - ``--vendor`` param
  - ``--module`` param
- - UI Component for Database/Inline translations
