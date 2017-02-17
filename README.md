@@ -3,5 +3,22 @@
 Add a CLI command to Collect missing translations in specified folder or the entire Magento 2 Root
 
 ``
-experius_missingtranslations:collect [-o|--output="..."] [-m|--magento] [-l|--locale="..."] [-s|--store="..."] [directory]
+php bin/magento experius_missingtranslations:collect [-o|--output="..."] [-m|--magento] [-l|--locale="..."] [-s|--store="..."] [directory]
 ``
+
+Use the command like this:
+
+``
+php bin/magento experius_missingtranslations:collect --output app/i18n/Experius/nl_NL/nl_NL.csv --magento --locale nl_NL
+``
+
+then edit the file and use the following command to merge the missing translations in the correct file with the core Magento 2 CLI command:
+
+``
+php bin/magento i18n:pack --mode merge app/i18n/Experius/nl_NL/nl_NL.csv nl_NL
+``
+
+TO DO:
+
+ - ```--vendor``` param
+ - UI Component for Database/Inline translations
