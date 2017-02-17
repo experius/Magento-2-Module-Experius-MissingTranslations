@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+    <acl>
+        <resources>
+            <resource id="Magento_Backend::admin">
+                <resource id="Experius_MissingTranslations::Translation" sortOrder="10" title="Translation">
+                    <resource id="Experius_MissingTranslations::Translation_save" sortOrder="10" title="Save Translation"/>
+                    <resource id="Experius_MissingTranslations::Translation_delete" sortOrder="20" title="Delete Translation"/>
+                    <resource id="Experius_MissingTranslations::Translation_update" sortOrder="30" title="Update Translation"/>
+                    <resource id="Experius_MissingTranslations::Translation_view" sortOrder="40" title="View Translation"/>
+                </resource>
+            </resource>
+        </resources>
+    </acl>
+</config>
