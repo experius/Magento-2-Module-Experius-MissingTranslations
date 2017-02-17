@@ -20,5 +20,6 @@ php bin/magento i18n:pack --mode merge app/i18n/Experius/nl_NL/nl_NL.csv nl_NL
 
 TO DO:
 
- - ```--vendor``` param
+ - ``--vendor`` param
+ - ``--module`` param
  - UI Component for Database/Inline translations
