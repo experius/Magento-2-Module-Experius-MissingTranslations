@@ -2,13 +2,13 @@
 <form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
 	<argument name="data" xsi:type="array">
 		<item name="js_config" xsi:type="array">
-			<item name="provider" xsi:type="string">experius_translation_form.translation_form_data_source</item>
-			<item name="deps" xsi:type="string">experius_translation_form.translation_form_data_source</item>
+			<item name="provider" xsi:type="string">experius_translation_form_new.translation_form_data_source</item>
+			<item name="deps" xsi:type="string">experius_translation_form_new.translation_form_data_source</item>
 		</item>
 		<item name="label" translate="true" xsi:type="string">General Information</item>
 		<item name="config" xsi:type="array">
 			<item name="dataScope" xsi:type="string">data</item>
-			<item name="namespace" xsi:type="string">experius_translation_form</item>
+			<item name="namespace" xsi:type="string">experius_translation_form_new</item>
 		</item>
 		<item name="template" xsi:type="string">templates/form/collapsible</item>
 		<item name="buttons" xsi:type="array">
@@ -74,10 +74,11 @@
 		</field>
 		<field name="string">
 			<argument name="data" xsi:type="array">
+				<item name="options" xsi:type="object">Experius\MissingTranslations\Ui\Component\Listing\Column\TranslatableString</item>
 				<item name="config" xsi:type="array">
-					<item name="dataType" xsi:type="string">text</item>
+					<item name="dataType" xsi:type="string">select</item>
 					<item name="label" translate="true" xsi:type="string">Translatable String</item>
-					<item name="formElement" xsi:type="string">input</item>
+					<item name="formElement" xsi:type="string">select</item>
 					<item name="source" xsi:type="string">Translation</item>
 					<item name="sortOrder" xsi:type="number">30</item>
 					<item name="dataScope" xsi:type="string">string</item>

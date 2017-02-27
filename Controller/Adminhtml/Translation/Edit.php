@@ -57,10 +57,10 @@ class Edit extends \Experius\MissingTranslations\Controller\Adminhtml\Translatio
         /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
         $resultPage = $this->resultPageFactory->create();
         $this->initPage($resultPage)->addBreadcrumb(
-            $id ? __('Edit Translation') : __('New Translation'),
-            $id ? __('Edit Translation') : __('New Translation')
+            __('Edit Translation'),
+            __('Edit Translation')
         );
-        $resultPage->getConfig()->getTitle()->prepend($id ? __('Edit Database Translation') : __('New Database Translation'));
+        $resultPage->getConfig()->getTitle()->prepend(__('Edit Translation'));
         return $resultPage;
     }
 }

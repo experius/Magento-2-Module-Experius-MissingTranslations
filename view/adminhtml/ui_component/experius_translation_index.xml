@@ -13,7 +13,7 @@
 		<item name="buttons" xsi:type="array">
 			<item name="add" xsi:type="array">
 				<item name="name" xsi:type="string">add</item>
-				<item name="label" xsi:type="string">Add new Translation</item>
+				<item name="label" xsi:type="string">Add New Translation</item>
 				<item name="class" xsi:type="string">primary</item>
 				<item name="url" xsi:type="string">*/*/new</item>
 			</item>

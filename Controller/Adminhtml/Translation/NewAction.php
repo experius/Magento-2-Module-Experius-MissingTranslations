@@ -14,31 +14,53 @@ namespace Experius\MissingTranslations\Controller\Adminhtml\Translation;
 class NewAction extends \Experius\MissingTranslations\Controller\Adminhtml\Translation
 {
 
-    protected $resultForwardFactory;
+    protected $resultPageFactory;
 
     /**
      * @param \Magento\Backend\App\Action\Context $context
      * @param \Magento\Framework\Registry $coreRegistry
-     * @param \Magento\Backend\Model\View\Result\ForwardFactory $resultForwardFactory
+     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\Registry $coreRegistry,
-        \Magento\Backend\Model\View\Result\ForwardFactory $resultForwardFactory
+        \Magento\Framework\View\Result\PageFactory $resultPageFactory
     ) {
-        $this->resultForwardFactory = $resultForwardFactory;
+        $this->resultPageFactory = $resultPageFactory;
         parent::__construct($context, $coreRegistry);
     }
 
     /**
-     * New action
+     * Edit action
      *
      * @return \Magento\Framework\Controller\ResultInterface
      */
     public function execute()
     {
-        /** @var \Magento\Framework\Controller\Result\Forward $resultForward */
-        $resultForward = $this->resultForwardFactory->create();
-        return $resultForward->forward('edit');
+        // 1. Get ID and create model
+        $id = $this->getRequest()->getParam('key_id');
+        $model = $this->_objectManager->create('Experius\MissingTranslations\Model\Translation');
+        
+        // 2. Initial checking
+        if ($id) {
+            $model->load($id);
+            if (!$model->getId()) {
+                $this->messageManager->addError(__('This Translation no longer exists.'));
+                /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
+                $resultRedirect = $this->resultRedirectFactory->create();
+                return $resultRedirect->setPath('*/*/');
+            }
+        }
+        $this->_coreRegistry->register('experius_missingtranslations_translation', $model);
+        
+        // 5. Build edit form
+        /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
+        $resultPage = $this->resultPageFactory->create();
+        $this->initPage($resultPage)->addBreadcrumb(
+            __('Add Translation'),
+            __('Add Translation')
+        );
+        $resultPage->getConfig()->getTitle()->prepend(__('Add Translation'));
+        return $resultPage;
     }
 }
