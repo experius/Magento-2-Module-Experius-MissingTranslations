@@ -16,18 +16,38 @@ use Magento\Framework\Exception\LocalizedException;
 class Save extends \Magento\Backend\App\Action
 {
 
+    /**
+     * @var \Magento\Framework\App\Request\DataPersistorInterface
+     */
     protected $dataPersistor;
 
     /**
+     * @array
+     */
+    protected $phrases;
+
+    /**
+     * @var \Experius\MissingTranslations\Helper\Data]
+     */
+    protected $helper;
+
+    /**
+     * Save constructor.
      * @param \Magento\Backend\App\Action\Context $context
+     * @param \Magento\Framework\Registry $coreRegistry
      * @param \Magento\Framework\App\Request\DataPersistorInterface $dataPersistor
+     * @param \Experius\MissingTranslations\Helper\Data $helper
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\Registry $coreRegistry,
-        \Magento\Framework\App\Request\DataPersistorInterface $dataPersistor
+        \Magento\Framework\App\Request\DataPersistorInterface $dataPersistor,
+        \Experius\MissingTranslations\Helper\Data $helper
     ) {
         $this->dataPersistor = $dataPersistor;
+        $this->helper = $helper;
+
+
         parent::__construct($context, $coreRegistry);
     }
 
@@ -49,7 +69,15 @@ class Save extends \Magento\Backend\App\Action
                 $this->messageManager->addError(__('This Translation no longer exists.'));
                 return $resultRedirect->setPath('*/*/');
             }
-        
+
+            $locale = $data['locale'];
+
+            $this->phrases = $this->helper->getPhrases($locale);
+
+            $line = $data['string'];
+            $data['string'] = $this->phrases[$line][0];
+            $this->helper->removeFromFile($line, $locale);
+
             $model->setData($data);
         
             try {

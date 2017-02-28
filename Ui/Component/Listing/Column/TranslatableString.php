@@ -17,8 +17,13 @@ class TranslatableString implements OptionSourceInterface
 
     protected $phrases = [];
 
-    public function __construct(\Magento\Framework\App\Filesystem\DirectoryList $directory_list) {
-        $this->phrases = array_map('str_getcsv', file($directory_list->getRoot() . '/app/i18n/Experius/nl_NL/nl_NL.csv'));
+    protected $helper;
+
+    public function __construct(
+        \Experius\MissingTranslations\Helper\Data $helper
+    ) {
+        $this->helper = $helper;
+        $this->phrases = $this->helper->getPhrases();
     }
 
     /**
@@ -32,7 +37,7 @@ class TranslatableString implements OptionSourceInterface
             $this->options = array();
             foreach($this->phrases as $line => $string) {
                 if (key_exists(1,$string) && $string[1] == '') {
-                    $this->options[] = array('value' => $string[0], 'label' => $string[0]);
+                    $this->options[] = array('value' => $line, 'label' => $string[0]);
                 }
             }
         }

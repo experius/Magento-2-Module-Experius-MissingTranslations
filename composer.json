@@ -13,7 +13,9 @@
     }
   ],
   "minimum-stability": "dev",
-  "require": {},
+  "require": {
+    "experius/module-formselectchosen": "1.0.*"
+  },
   "autoload": {
     "psr-4": {
       "Experius\\MissingTranslations\\": ""

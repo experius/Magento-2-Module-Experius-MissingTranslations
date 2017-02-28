@@ -39,15 +39,18 @@
 	<fieldset name="General">
 		<argument name="data" xsi:type="array">
 			<item name="config" xsi:type="array">
-				<item name="label" xsi:type="string"/>
+				<item name="additionalClasses" xsi:type="string">admin__field-missingtranslation</item>
+				<item name="label" xsi:type="string" />
 			</item>
 		</argument>
 		<field name="locale">
 			<argument name="data" xsi:type="array">
+				<item name="options" xsi:type="object">Magento\Config\Model\Config\Source\Locale</item>
 				<item name="config" xsi:type="array">
+					<item name="component" xsi:type="string">Experius_MissingTranslations/js/components/locale</item>
 					<item name="dataType" xsi:type="string">text</item>
 					<item name="label" translate="true" xsi:type="string">Locale</item>
-					<item name="formElement" xsi:type="string">input</item>
+					<item name="formElement" xsi:type="string">select</item>
 					<item name="source" xsi:type="string">Translation</item>
 					<item name="sortOrder" xsi:type="number">10</item>
 					<item name="dataScope" xsi:type="string">locale</item>
@@ -59,13 +62,15 @@
 		</field>
 		<field name="store_id">
 			<argument name="data" xsi:type="array">
+				<item name="options" xsi:type="object">Magento\Store\Model\System\Store</item>
 				<item name="config" xsi:type="array">
 					<item name="dataType" xsi:type="string">text</item>
 					<item name="label" translate="true" xsi:type="string">Store ID</item>
-					<item name="formElement" xsi:type="string">input</item>
+					<item name="formElement" xsi:type="string">select</item>
 					<item name="source" xsi:type="string">Translation</item>
 					<item name="sortOrder" xsi:type="number">20</item>
 					<item name="dataScope" xsi:type="string">store_id</item>
+					<item name="default" xsi:type="string">nl_NL</item>
 					<item name="validation" xsi:type="array">
 						<item name="required-entry" xsi:type="boolean">true</item>
 					</item>
@@ -82,6 +87,8 @@
 					<item name="source" xsi:type="string">Translation</item>
 					<item name="sortOrder" xsi:type="number">30</item>
 					<item name="dataScope" xsi:type="string">string</item>
+					<item name="elementTmpl" xsi:type="string">Experius_FormSelectChosen/selectChosen</item>
+					<item name="component" xsi:type="string">Experius_FormSelectChosen/js/component/select.chosen</item>
 					<item name="validation" xsi:type="array">
 						<item name="required-entry" xsi:type="boolean">true</item>
 					</item>

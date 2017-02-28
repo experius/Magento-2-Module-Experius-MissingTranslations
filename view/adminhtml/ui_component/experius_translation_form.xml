@@ -44,10 +44,11 @@
 		</argument>
 		<field name="locale">
 			<argument name="data" xsi:type="array">
+				<item name="options" xsi:type="object">Magento\Config\Model\Config\Source\Locale</item>
 				<item name="config" xsi:type="array">
 					<item name="dataType" xsi:type="string">text</item>
 					<item name="label" translate="true" xsi:type="string">Locale</item>
-					<item name="formElement" xsi:type="string">input</item>
+					<item name="formElement" xsi:type="string">select</item>
 					<item name="source" xsi:type="string">Translation</item>
 					<item name="sortOrder" xsi:type="number">10</item>
 					<item name="dataScope" xsi:type="string">locale</item>
@@ -59,10 +60,11 @@
 		</field>
 		<field name="store_id">
 			<argument name="data" xsi:type="array">
+				<item name="options" xsi:type="object">Magento\Store\Model\System\Store</item>
 				<item name="config" xsi:type="array">
 					<item name="dataType" xsi:type="string">text</item>
 					<item name="label" translate="true" xsi:type="string">Store ID</item>
-					<item name="formElement" xsi:type="string">input</item>
+					<item name="formElement" xsi:type="string">select</item>
 					<item name="source" xsi:type="string">Translation</item>
 					<item name="sortOrder" xsi:type="number">20</item>
 					<item name="dataScope" xsi:type="string">store_id</item>
@@ -77,6 +79,7 @@
 				<item name="config" xsi:type="array">
 					<item name="dataType" xsi:type="string">text</item>
 					<item name="label" translate="true" xsi:type="string">Translatable String</item>
+					<item name="component" xsi:type="string">Magento_Catalog/js/components/disable-on-option/input</item>
 					<item name="formElement" xsi:type="string">input</item>
 					<item name="source" xsi:type="string">Translation</item>
 					<item name="sortOrder" xsi:type="number">30</item>

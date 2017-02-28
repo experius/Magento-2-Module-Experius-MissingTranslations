@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="general" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="100" translate="label">
+            <group id="locale" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label">
+                <field id="language_vendor" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="1" translate="label" type="text" canRestore="1">
+                    <label>Language Vendor for Missing Translations</label>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
