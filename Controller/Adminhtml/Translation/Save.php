@@ -70,13 +70,16 @@ class Save extends \Magento\Backend\App\Action
                 return $resultRedirect->setPath('*/*/');
             }
 
-            $locale = $data['locale'];
 
-            $this->phrases = $this->helper->getPhrases($locale);
+            if (!$model->getId() && !$id) {
+                $locale = $data['locale'];
 
-            $line = $data['string'];
-            $data['string'] = $this->phrases[$line][0];
-            $this->helper->removeFromFile($line, $locale);
+                $this->phrases = $this->helper->getPhrases($locale);
+
+                $line = $data['string'];
+                $data['string'] = $this->phrases[$line][0];
+                $this->helper->removeFromFile($line, $locale);
+            }
 
             $model->setData($data);
         

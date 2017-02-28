@@ -60,10 +60,10 @@
 		</field>
 		<field name="store_id">
 			<argument name="data" xsi:type="array">
-				<item name="options" xsi:type="object">Magento\Store\Model\System\Store</item>
+				<item name="options" xsi:type="object">Experius\MissingTranslations\Ui\Component\Listing\Column\Store</item>
 				<item name="config" xsi:type="array">
 					<item name="dataType" xsi:type="string">text</item>
-					<item name="label" translate="true" xsi:type="string">Store ID</item>
+					<item name="label" translate="true" xsi:type="string">Store</item>
 					<item name="formElement" xsi:type="string">select</item>
 					<item name="source" xsi:type="string">Translation</item>
 					<item name="sortOrder" xsi:type="number">20</item>
