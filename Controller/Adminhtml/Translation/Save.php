@@ -48,7 +48,7 @@ class Save extends \Magento\Backend\App\Action
         $this->helper = $helper;
 
 
-        parent::__construct($context, $coreRegistry);
+        parent::__construct($context);
     }
 
     /**
