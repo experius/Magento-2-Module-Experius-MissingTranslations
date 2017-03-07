@@ -62,7 +62,9 @@ abstract class AbstractAdapter implements AdapterInterface
             !strpos(strtolower($this->_file), '/magento/module-new-relic-reporting/') &&
             !strpos(strtolower($this->_file), '/magento/module-resource-connections/') &&
             !strpos(strtolower($this->_file), '/magento/module-security/') &&
-            !strpos(strtolower($this->_file), '/magento/module-logging/')
+            !strpos(strtolower($this->_file), '/magento/module-logging/') &&
+            !strpos($this->_file, '/Test/Unit/') &&
+            !strpos($this->_file, '/magento/magento2-base/dev/')
         ) {
             $this->_parse();
         }
