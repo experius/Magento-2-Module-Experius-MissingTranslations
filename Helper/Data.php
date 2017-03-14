@@ -73,7 +73,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public function getFileName($locale = 'en_US')
     {
         $vendor = $this->getLanguageVendor();
-        $filename = $this->directory_list->getRoot() . '/app/i18n/'. $vendor . '/' . $locale . '/' . $locale . '-missing.csv';
+        $filename = $this->directory_list->getRoot() . '/app/i18n/'. $vendor . '/' . strtolower($locale) . '/' . $locale . '-missing.csv';
 
         return (file_exists($filename)) ? $filename : false;
     }

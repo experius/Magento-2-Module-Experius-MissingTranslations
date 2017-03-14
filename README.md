@@ -9,19 +9,16 @@ php bin/magento experius_missingtranslations:collect [-o|--output="..."] [-m|--m
 Use the command like this:
 
 ``
-php bin/magento experius_missingtranslations:collect --output app/i18n/Experius/nl_NL/nl_NL.csv --magento --locale nl_NL
+php bin/magento experius_missingtranslations:collect --output app/i18n/experius/nl_nl/nl_NL-missing.csv --magento --locale nl_NL
 ``
 
-then edit the file and use the following command to merge the missing translations in the correct file with the core Magento 2 CLI command:
+then edit the file, remove the suffig `missing` and eventually transform it to a language pack by adding a `language.xml` and a `registration.php`
+
+
+Besides transforming the file to a language pack it is possible to add new translations through the admin interface, which can be found under Stores > Translations > Database / Inline only if you generated it to a file with the following filename a file in app/i18n/Vendor/locale_code/locale_code.csv . For example use:
 
 ``
-php bin/magento i18n:pack --mode merge app/i18n/Experius/nl_NL/nl_NL.csv nl_NL
-``
-
-If you generate a file in app/i18n/Vendor/locale_code/locale_code.csv it is possible to add new translations through the admin interface, which can be found under Stores > Translations > Database / Inline. For example use:
-
-``
-php bin/magento experius_missingtranslations:collect --output app/i18n/Experius/nl_NL/nl_NL.csv --magento --locale nl_NL
+php bin/magento experius_missingtranslations:collect --output app/i18n/experius/nl_nl/nl_NL.csv --magento --locale nl_NL
 ``
 
 
