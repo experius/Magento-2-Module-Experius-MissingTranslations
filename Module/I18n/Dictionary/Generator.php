@@ -81,7 +81,7 @@ class Generator
      * @throws \UnexpectedValueException
      * @return void
      */
-    public function generate($directory, $outputFilename, $withContext = false, $locale = 'en_US')
+    public function generate($directory, $outputFilename, $withContext = false, $locale = 'en_US', $delimiter = ',', $enclosure = '"')
     {
         $optionResolver = $this->optionResolverFactory->create($directory, $withContext);
 
@@ -94,7 +94,7 @@ class Generator
             throw new \UnexpectedValueException('No phrases found in the specified dictionary file.');
         }
         foreach ($phraseList as $phrase) {
-            $this->getDictionaryWriter($outputFilename)->write($phrase);
+            $this->getDictionaryWriter($outputFilename, $delimiter, $enclosure)->write($phrase);
         }
         $this->writer = null;
     }
@@ -103,10 +103,10 @@ class Generator
      * @param string $outputFilename
      * @return WriterInterface
      */
-    protected function getDictionaryWriter($outputFilename)
+    protected function getDictionaryWriter($outputFilename, $delimiter = ',', $enclusere = '"')
     {
         if (null === $this->writer) {
-            $this->writer = $this->factory->createDictionaryWriter($outputFilename);
+            $this->writer = $this->factory->createDictionaryWriter($outputFilename, $delimiter, $enclusere);
         }
         return $this->writer;
     }

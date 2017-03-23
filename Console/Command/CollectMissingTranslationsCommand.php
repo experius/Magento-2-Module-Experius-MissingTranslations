@@ -28,6 +28,10 @@ class CollectMissingTranslationsCommand extends Command
     const SHORTCUT_KEY_MAGENTO = 'm';
     const INPUT_KEY_LOCALE = 'locale';
     const SHORTCUT_KEY_LOCALE = 'l';
+    const INPUT_KEY_DELIMITER = 'delimiter';
+    const SHORTCUT_KEY_DELIMITER = 'd';
+    const INPUT_KEY_ENCLOSURE = 'enclosure';
+    const SHORTCUT_KEY_ENCLOSURE = 'e';
     const INPUT_KEY_STORE = 'store';
     const SHORTCUT_KEY_STORE = 's';
 
@@ -73,11 +77,23 @@ class CollectMissingTranslationsCommand extends Command
         $generator = ServiceLocator::getDictionaryGenerator();
         $this->state->setAreaCode('frontend');
         $this->emulation->startEnvironmentEmulation($input->getOption(self::INPUT_KEY_STORE));
+
+        $enclosure = '"';
+        if ($input->getOption(self::INPUT_KEY_ENCLOSURE)) {
+            $enclosure = $input->getOption(self::INPUT_KEY_ENCLOSURE);
+        }
+        $delimiter = ',';
+        if ($input->getOption(self::INPUT_KEY_DELIMITER)) {
+            $delimiter = $input->getOption(self::INPUT_KEY_DELIMITER);
+        }
+
         $generator->generate(
             $directory,
             $input->getOption(self::INPUT_KEY_OUTPUT),
             $input->getOption(self::INPUT_KEY_MAGENTO),
-            $input->getOption(self::INPUT_KEY_LOCALE)
+            $input->getOption(self::INPUT_KEY_LOCALE),
+            $delimiter,
+            $enclosure
         );
         $this->emulation->stopEnvironmentEmulation();
         $output->writeln('<info>Collected Missing Translations for specified store</info>');
@@ -114,6 +130,18 @@ class CollectMissingTranslationsCommand extends Command
                 self::SHORTCUT_KEY_LOCALE,
                 InputOption::VALUE_REQUIRED,
                 'Use the --locale parameter to parse specific language.'
+            ),
+            new InputOption(
+                self::INPUT_KEY_DELIMITER,
+                self::SHORTCUT_KEY_DELIMITER,
+                InputArgument::OPTIONAL,
+                'Use the --delimiter parameter to change the csv delimiter.'
+            ),
+            new InputOption(
+                self::INPUT_KEY_ENCLOSURE,
+                self::SHORTCUT_KEY_ENCLOSURE,
+                InputArgument::OPTIONAL,
+                'Use the --delimiter parameter to change the csv enclosure.'
             ),
             new InputOption(
                 self::INPUT_KEY_STORE,

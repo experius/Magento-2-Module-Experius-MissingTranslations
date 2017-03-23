@@ -22,7 +22,7 @@ class Factory
      * @return \Experius\MissingTranslations\Module\I18n\Dictionary\WriterInterface
      * @throws \InvalidArgumentException
      */
-    public function createDictionaryWriter($filename = null)
+    public function createDictionaryWriter($filename = null, $delimiter = ',', $enclosure = '"')
     {
         if (!$filename) {
             $writer = new Dictionary\Writer\Csv\Stdo();
@@ -30,7 +30,7 @@ class Factory
             switch (pathinfo($filename, \PATHINFO_EXTENSION)) {
                 case 'csv':
                 default:
-                    $writer = new Dictionary\Writer\Csv($filename);
+                    $writer = new Dictionary\Writer\Csv($filename, $delimiter, $enclosure);
                     break;
             }
         }

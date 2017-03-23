@@ -3,7 +3,7 @@
 Add a CLI command to Collect missing translations in specified folder or the entire Magento 2 Root and add Admin Grid to display and update database/inline translations (Stores > Translations > Database/Inline Translations)
 
 ``
-php bin/magento experius_missingtranslations:collect [-o|--output="..."] [-m|--magento] [-l|--locale="..."] [-s|--store="..."] [directory]
+php bin/magento experius_missingtranslations:collect [-o|--output="..."] [-m|--magento] [-l|--locale="..."] [-d|--delimiter="..."] [-e|--enclosure="..."] [-s|--store="..."] [directory]
 ``
 
 Use the command like this:
