@@ -9,7 +9,7 @@ php bin/magento experius_missingtranslations:collect [-o|--output="..."] [-m|--m
 Use the command like this:
 
 ``
-php bin/magento experius_missingtranslations:collect --output app/i18n/experius/nl_nl/nl_NL-missing.csv --magento --locale nl_NL
+php bin/magento experius_missingtranslations:collect --output app/i18n/experius/missing/nl_NL.csv --magento --locale nl_NL
 ``
 
 then edit the file, remove the suffig `missing` and eventually transform it to a language pack by adding a `language.xml` and a `registration.php`
