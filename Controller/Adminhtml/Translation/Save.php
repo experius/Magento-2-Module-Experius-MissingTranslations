@@ -77,8 +77,10 @@ class Save extends \Magento\Backend\App\Action
                 $this->phrases = $this->helper->getPhrases($locale);
 
                 $line = $data['string'];
-                $data['string'] = $this->phrases[$line][0];
-                $this->helper->removeFromFile($line, $locale);
+                if (key_exists($line, $this->phrases)) {
+                    $data['string'] = $this->phrases[$line][0];
+                    $this->helper->removeFromFile($line, $locale);
+                }
             }
 
             $model->setData($data);
