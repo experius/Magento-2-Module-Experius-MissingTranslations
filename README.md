@@ -37,7 +37,11 @@ then edit the file, remove the suffig `missing` and eventually transform it to a
 
 ## Missing Translations
 
-Besides transforming the file to a language pack it is possible to add new translations through the admin interface, which can be found under Stores > Translations > Database / Inline only if you generated it to a file with the following filename a file in app/i18n/Vendor/missing/locale_code.csv . For example use:
+Besides transforming the file to a language pack it is possible to add new translations through the admin interface, which can be found under `Stores > Translations > Database / Inline`
+
+**only if you generated it to a file with the following filename a file in app/i18n/Vendor/missing/locale_code.csv.** 
+
+For example generate missing nl_NL strings:
 
 ```
 php bin/magento experius_missingtranslations:collect --output app/i18n/experius/missing/nl_NL.csv --magento --locale nl_NL
