@@ -11,12 +11,12 @@
 		</item>
 		<item name="spinner" xsi:type="string">experius_translation_columns</item>
 		<item name="buttons" xsi:type="array">
-			<item name="add" xsi:type="array">
-				<item name="name" xsi:type="string">add</item>
-				<item name="label" xsi:type="string">Translate String</item>
-				<item name="class" xsi:type="string">secondary</item>
-				<item name="url" xsi:type="string">*/*/new</item>
-			</item>
+			<!--<item name="add" xsi:type="array">-->
+				<!--<item name="name" xsi:type="string">add</item>-->
+				<!--<item name="label" xsi:type="string">Translate String</item>-->
+				<!--<item name="class" xsi:type="string">secondary</item>-->
+				<!--<item name="url" xsi:type="string">*/*/new</item>-->
+			<!--</item>-->
 			<item name="translate" xsi:type="array">
 				<item name="name" xsi:type="string">translate</item>
 				<item name="label" xsi:type="string">Translate Missing String</item>
