@@ -87,9 +87,10 @@
 		<column name="key_id">
 			<argument name="data" xsi:type="array">
 				<item name="config" xsi:type="array">
-					<item name="filter" xsi:type="string">text</item>
+					<item name="filter" xsi:type="string">textRange</item>
 					<item name="sorting" xsi:type="string">asc</item>
-					<item name="label" translate="true" xsi:type="string">Key ID</item>
+					<item name="label" translate="true" xsi:type="string">ID</item>
+					<item name="enabled" xsi:type="string">false</item>
 				</item>
 			</argument>
 		</column>
@@ -108,7 +109,7 @@
 			<argument name="data" xsi:type="array">
 				<item name="config" xsi:type="array">
 					<item name="filter" xsi:type="string">text</item>
-					<item name="label" translate="true" xsi:type="string">String</item>
+					<item name="label" translate="true" xsi:type="string">Original String</item>
 				</item>
 			</argument>
 		</column>
@@ -116,7 +117,7 @@
 			<argument name="data" xsi:type="array">
 				<item name="config" xsi:type="array">
 					<item name="filter" xsi:type="string">text</item>
-					<item name="label" translate="true" xsi:type="string">Translation</item>
+					<item name="label" translate="true" xsi:type="string">Translated String</item>
 				</item>
 			</argument>
 		</column>

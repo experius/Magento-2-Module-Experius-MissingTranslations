@@ -39,7 +39,7 @@
 	<fieldset name="General">
 		<argument name="data" xsi:type="array">
 			<item name="config" xsi:type="array">
-				<item name="label" xsi:type="string"/>
+				<item name="label" xsi:type="string">Custom New Translation (Advanced)</item>
 			</item>
 		</argument>
 		<field name="locale">
@@ -55,6 +55,7 @@
 					<item name="validation" xsi:type="array">
 						<item name="required-entry" xsi:type="boolean">true</item>
 					</item>
+					<item name="notice" xsi:type="string" translate="true">Select the Locale/Language for which you want to set the translation.</item>
 				</item>
 			</argument>
 		</field>
@@ -71,6 +72,7 @@
 					<item name="validation" xsi:type="array">
 						<item name="required-entry" xsi:type="boolean">true</item>
 					</item>
+					<item name="notice" xsi:type="string" translate="true">Change Store if you have a Storeview Specific Translation</item>
 				</item>
 			</argument>
 		</field>
@@ -78,7 +80,7 @@
 			<argument name="data" xsi:type="array">
 				<item name="config" xsi:type="array">
 					<item name="dataType" xsi:type="string">text</item>
-					<item name="label" translate="true" xsi:type="string">Translatable String</item>
+					<item name="label" translate="true" xsi:type="string">Original String</item>
 					<item name="formElement" xsi:type="string">input</item>
 					<item name="source" xsi:type="string">Translation</item>
 					<item name="sortOrder" xsi:type="number">30</item>
@@ -86,6 +88,7 @@
 					<item name="validation" xsi:type="array">
 						<item name="required-entry" xsi:type="boolean">true</item>
 					</item>
+					<item name="notice" xsi:type="string" translate="true">Fill in the Original String as it is used in the code/template.</item>
 				</item>
 			</argument>
 		</field>
@@ -93,7 +96,7 @@
 			<argument name="data" xsi:type="array">
 				<item name="config" xsi:type="array">
 					<item name="dataType" xsi:type="string">text</item>
-					<item name="label" translate="true" xsi:type="string">Translation</item>
+					<item name="label" translate="true" xsi:type="string">Translated String</item>
 					<item name="formElement" xsi:type="string">input</item>
 					<item name="source" xsi:type="string">Translation</item>
 					<item name="sortOrder" xsi:type="number">40</item>
@@ -101,6 +104,7 @@
 					<item name="validation" xsi:type="array">
 						<item name="required-entry" xsi:type="boolean">true</item>
 					</item>
+					<item name="notice" xsi:type="string" translate="true">Fill in the Translation for the Original String.</item>
 				</item>
 			</argument>
 		</field>
