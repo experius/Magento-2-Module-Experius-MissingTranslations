@@ -22,14 +22,14 @@ define([
             self.checkRequest = actionLocale(self.isLocaleCheckComplete, this.value());
 
             $.when(this.isLocaleCheckComplete).done(function (data) {
-                console.log(data);
+                //console.log(data);
             }).fail(function () {
                 self.error('request failed');
             }).always(function () {
                 //registry.get(registry.get(self.parentName).parentName).set('isLoading',false);
             });
 
-            console.log(this.value());
+            //console.log(this.value());
 
         }
     })
