@@ -45,7 +45,7 @@
 		</argument>
 		<field name="locale">
 			<argument name="data" xsi:type="array">
-				<item name="options" xsi:type="object">Magento\Config\Model\Config\Source\Locale</item>
+				<item name="options" xsi:type="object">Experius\MissingTranslations\Model\Config\Source\Locale</item>
 				<item name="config" xsi:type="array">
 					<item name="component" xsi:type="string">Experius_MissingTranslations/js/components/locale</item>
 					<item name="dataType" xsi:type="string">text</item>
