@@ -58,7 +58,7 @@
 			<item name="config" xsi:type="array">
 				<item name="editorConfig" xsi:type="array">
 					<item name="selectProvider" xsi:type="string">experius_translation_index.experius_translation_index.experius_translation_columns.ids</item>
-					<item name="enabled" xsi:type="boolean">false</item>
+					<item name="enabled" xsi:type="boolean">true</item>
 					<item name="indexField" xsi:type="string">key_id</item>
 					<item name="clientConfig" xsi:type="array">
 						<item name="saveUrl" path="experius_missingtranslations/Translation/inlineEdit" xsi:type="url"/>
@@ -116,6 +116,12 @@
 		<column name="translate">
 			<argument name="data" xsi:type="array">
 				<item name="config" xsi:type="array">
+					<item name="editor" xsi:type="array">
+						<item name="editorType" xsi:type="string">text</item>
+						<item name="validation" xsi:type="array">
+							<item name="required-entry" xsi:type="boolean">true</item>
+						</item>
+					</item>
 					<item name="filter" xsi:type="string">text</item>
 					<item name="label" translate="true" xsi:type="string">Translated String</item>
 				</item>
