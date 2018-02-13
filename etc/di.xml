@@ -20,4 +20,11 @@
 			</argument>
 		</arguments>
 	</type>
+	<type name="Magento\Framework\Console\CommandList">
+		<arguments>
+			<argument name="commands" xsi:type="array">
+				<item name="AddTranslationsToDatabaseCommand" xsi:type="object">Experius\MissingTranslations\Console\Command\AddTranslationsToDatabaseCommand</item>
+			</argument>
+		</arguments>
+	</type>
 </config>
