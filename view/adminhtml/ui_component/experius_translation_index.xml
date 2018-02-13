@@ -138,6 +138,17 @@
 				</item>
 			</argument>
 		</column>
+		<column class="Experius\MissingTranslations\Ui\Component\Listing\Column\Different" name="different">
+			<argument name="data" xsi:type="array">
+				<item name="options" xsi:type="object">Magento\Eav\Model\Entity\Attribute\Source\Boolean</item>
+				<item name="config" xsi:type="array">
+					<item name="filter" xsi:type="string">select</item>
+					<item name="label" translate="true" xsi:type="string">Translation different</item>
+					<item name="dataType" xsi:type="string">select</item>
+					<item name="component" xsi:type="string">Magento_Ui/js/grid/columns/select</item>
+				</item>
+			</argument>
+		</column>
 		<actionsColumn class="Experius\MissingTranslations\Ui\Component\Listing\Column\TranslationActions" name="actions">
 			<argument name="data" xsi:type="array">
 				<item name="config" xsi:type="array">
