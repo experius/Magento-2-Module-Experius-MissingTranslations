@@ -1,12 +1,32 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
- * See COPYING.txt for license details.
+ * A Magento 2 module named Experius/MissingTranslations
+ * Copyright (C) 2018 Experius
+ * 
+ * This file is part of Experius/MissingTranslations.
+ * 
+ * Experius/MissingTranslations is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 namespace Experius\MissingTranslations\Helper;
 
 use Magento\Framework\DataObject;
 
+/**
+ * Class Data
+ * @package Experius\MissingTranslations\Helper
+ */
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
     /**
@@ -34,13 +54,18 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         parent::__construct($context);
     }
 
+    /**
+     * Get language vendor from configuration for current store
+     *
+     * @return string
+     */
     public function getLanguageVendor()
     {
-        return $this->scopeConfig->getValue("general/locale/language_vendor", \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return $this->scopeConfig->getValue('general/locale/language_vendor', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 
     /**
-     * Get options
+     * Get translation phrases from missing translation files (if generated)
      *
      * @return array
      */
@@ -54,6 +79,12 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         return $this->phrases;
     }
 
+    /**
+     * Remove translation line from missing translation file
+     *
+     * @param bool $line
+     * @param string $locale
+     */
     public function removeFromFile($line = false, $locale = 'en_US')
     {
         if ($line) {
@@ -69,7 +100,12 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         }
     }
 
-
+    /**
+     * Get filename of missing translation file based of locale
+     *
+     * @param string $locale
+     * @return bool|string
+     */
     public function getFileName($locale = 'en_US')
     {
         $vendor = $this->getLanguageVendor();
