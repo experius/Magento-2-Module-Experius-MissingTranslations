@@ -1,12 +1,22 @@
 <?php
 /**
- * Add CSV translations as database translations
+ * A Magento 2 module named Experius/MissingTranslations
  * Copyright (C) 2018 Experius
  *
- * This file included in Experius/MissingTranslations is licensed under OSL 3.0
+ * This file is part of Experius/MissingTranslations.
  *
- * http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * Please see LICENSE.txt for the full text of the OSL 3.0 license
+ * Experius/MissingTranslations is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace Experius\MissingTranslations\Console\Command;
@@ -33,66 +43,27 @@ class AddTranslationsToDatabaseCommand extends Command
     const SHORTCUT_KEY_INCLUDEMISSING = 'im';
 
     /**
-     * @var Magento\Store\Model\App\Emulation
-     */
-    protected $emulation;
-
-    /**
      * @var Magento\Framework\App\State
      */
     protected $state;
 
     /**
-     * Parser
-     *
-     * @var \Experius\MissingTranslations\Module\I18n\Parser\Parser
+     * @var \Experius\MissingTranslations\Model\TranslationCollector
      */
-    protected $parser;
+    protected $translationCollector;
 
     /**
-     * Translation
+     * AddTranslationsToDatabaseCommand constructor.
      *
-     * @var \Experius\MissingTranslations\Model\TranslationFactory
-     */
-    protected $translationFactory;
-
-    /**
-     * Translatemodel
-     *
-     * @var \Magento\Translation\Model\ResourceModel\Translate
-     */
-    protected $translateModel;
-
-    /**
-     * Helper
-     *
-     * @var \Experius\MissingTranslations\Helper\Data
-     */
-    protected $helper;
-
-    /**
-     * CollectMissingTranslationsCommand constructor.
-     * @param \Magento\Store\Model\App\Emulation $emulation
      * @param \Magento\Framework\App\State $state
-     * @param \Experius\MissingTranslations\Module\I18n\Parser\Parser $parser
-     * @param \Experius\MissingTranslations\Model\Translation $translation
-     * @param \Magento\Translation\Model\ResourceModel\Translate $translateModel ,
-     * @param \Experius\MissingTranslations\Helper\Data $helper
+     * @param \Experius\MissingTranslations\Model\TranslationCollector $translationCollector
      */
     public function __construct(
-        \Magento\Store\Model\App\Emulation $emulation,
         \Magento\Framework\App\State $state,
-        \Experius\MissingTranslations\Module\I18n\Parser\Parser $parser,
-        \Experius\MissingTranslations\Model\TranslationFactory $translationFactory,
-        \Magento\Translation\Model\ResourceModel\Translate $translateModel,
-        \Experius\MissingTranslations\Helper\Data $helper
+        \Experius\MissingTranslations\Model\TranslationCollector $translationCollector
     ) {
-        $this->emulation = $emulation;
         $this->state = $state;
-        $this->parser = $parser;
-        $this->translationFactory = $translationFactory;
-        $this->translateModel = $translateModel;
-        $this->helper = $helper;
+        $this->translationCollector = $translationCollector;
         parent::__construct();
     }
 
@@ -102,7 +73,6 @@ class AddTranslationsToDatabaseCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->state->setAreaCode('frontend');
-        $this->emulation->startEnvironmentEmulation($input->getOption(self::INPUT_KEY_STORE));
 
         if (!$input->getOption(self::INPUT_KEY_LOCALE)) {
             throw new \InvalidArgumentException('Locale is not set. Please use --locale to set locale');
@@ -120,7 +90,7 @@ class AddTranslationsToDatabaseCommand extends Command
             throw new \InvalidArgumentException('Store is needed when --global flag is not set.');
         }
 
-        $store = $global ? '0' : $input->getOption(self::INPUT_KEY_STORE);
+        $storeId = $global ? '0' : $input->getOption(self::INPUT_KEY_STORE);
 
         $includeMissing = false;
         if ($input->getOption(self::INPUT_KEY_INCLUDEMISSING)) {
@@ -130,58 +100,13 @@ class AddTranslationsToDatabaseCommand extends Command
         $output->writeln(
             'Inserting all csv translations'
             . ($includeMissing ? ', including missing translations,' : '')
-            . ' into database for store id <info>' . $store
+            . ' into database for store id <info>' . $storeId
             . '</info> and locale <info>' . $locale . '</info>'
         );
         $output->writeln('Still working... One moment.');
 
-        $this->parser->loadTranslations($locale);
-        $translations = $this->parser->getTranslations();
+        $insertionCount = $this->translationCollector->updateTranslationDatabase($storeId, $locale, $includeMissing);
 
-        if ($includeMissing) {
-            $missingPhrases = $this->helper->getPhrases($locale);
-            $missingTranslations = array();
-            foreach ($missingPhrases as $phrase) {
-                $missingTranslations[$phrase[0]] = $phrase[0];
-            }
-            if (!empty($missingTranslations)) {
-                $translations = array_merge($translations, $missingTranslations);
-            }
-        }
-
-        $existingTranslation = $this->translateModel->getTranslationArray($store, $locale);
-        $translations = array_diff_key($translations, $existingTranslation);
-
-        $insertionCount = 0;
-        foreach ($translations as $key => $value) {
-            /**
-             * Due to Magento table limitation strings longer than 255 characters are being cut off, so these are excluded for now
-             */
-            if (strlen($key) > 255 || strlen($value) > 255) {
-                continue;
-            }
-
-            $different = ($value == $key) ? 0 : 1;
-
-            $data = array(
-                'translate' => $value,
-                'store_id' => $store,
-                'locale' => $locale,
-                'string' => $key,
-                'crc_string' => crc32($key),
-                'different' => $different
-            );
-            $translation = $this->translationFactory->create();
-            $translation->setData($data);
-            try {
-                $translation->save();
-                $insertionCount++;
-            } catch (Exception $e) {
-                $output->writeln('<error>' . $e->getMessage() . '</error>');
-            }
-        }
-
-        $this->emulation->stopEnvironmentEmulation();
         if ($insertionCount > 0) {
             $output->writeln('Insertion was successful, <info>' . $insertionCount . '</info> translations added');
         } else {

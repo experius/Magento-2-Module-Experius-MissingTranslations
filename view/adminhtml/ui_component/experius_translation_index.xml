@@ -88,17 +88,6 @@
 				</item>
 			</argument>
 		</column>
-		<column name="locale">
-			<argument name="data" xsi:type="array">
-				<item name="options" xsi:type="object">Experius\MissingTranslations\Model\Config\Source\Locale</item>
-				<item name="config" xsi:type="array">
-					<item name="filter" xsi:type="string">select</item>
-					<item name="label" translate="true" xsi:type="string">Locale</item>
-					<item name="dataType" xsi:type="string">select</item>
-					<item name="component" xsi:type="string">Magento_Ui/js/grid/columns/select</item>
-				</item>
-			</argument>
-		</column>
 		<column name="string">
 			<argument name="data" xsi:type="array">
 				<item name="config" xsi:type="array">
@@ -121,6 +110,30 @@
 				</item>
 			</argument>
 		</column>
+		<column name="locale">
+			<argument name="data" xsi:type="array">
+				<item name="options" xsi:type="object">Experius\MissingTranslations\Model\Config\Source\Locale</item>
+				<item name="config" xsi:type="array">
+					<item name="filter" xsi:type="string">select</item>
+					<item name="label" translate="true" xsi:type="string">Locale</item>
+					<item name="dataType" xsi:type="string">select</item>
+					<item name="component" xsi:type="string">Magento_Ui/js/grid/columns/select</item>
+				</item>
+			</argument>
+		</column>
+		<column name="different">
+			<argument name="data" xsi:type="array">
+				<item name="options" xsi:type="object">Magento\Eav\Model\Entity\Attribute\Source\Boolean</item>
+				<item name="config" xsi:type="array">
+					<item name="label" translate="true" xsi:type="string">Has a translation</item>
+					<item name="filter" xsi:type="string">select</item>
+					<item name="dataType" xsi:type="string">select</item>
+					<item name="component" xsi:type="string">Magento_Ui/js/grid/columns/select</item>
+					<item name="sortable" xsi:type="string">true</item>
+					<item name="bodyTmpl" xsi:type="string">ui/grid/cells/html</item>
+				</item>
+			</argument>
+		</column>
 		<column name="store_id">
 			<argument name="data" xsi:type="array">
 				<item name="options" xsi:type="object">Experius\MissingTranslations\Ui\Component\Listing\Column\Store</item>
@@ -129,18 +142,6 @@
 					<item name="label" translate="true" xsi:type="string">Store</item>
 					<item name="dataType" xsi:type="string">select</item>
 					<item name="component" xsi:type="string">Magento_Ui/js/grid/columns/select</item>
-				</item>
-			</argument>
-		</column>
-		<column class="Experius\MissingTranslations\Ui\Component\Listing\Column\Different" name="different">
-			<argument name="data" xsi:type="array">
-				<item name="options" xsi:type="object">Magento\Eav\Model\Entity\Attribute\Source\Boolean</item>
-				<item name="config" xsi:type="array">
-					<item name="label" translate="true" xsi:type="string">Translation different</item>
-					<item name="filter" xsi:type="string">select</item>
-					<item name="dataType" xsi:type="string">select</item>
-					<item name="component" xsi:type="string">Magento_Ui/js/grid/columns/select</item>
-					<item name="sortable" xsi:type="string">true</item>
 				</item>
 			</argument>
 		</column>
