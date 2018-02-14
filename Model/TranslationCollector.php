@@ -27,6 +27,9 @@ namespace Experius\MissingTranslations\Model;
  */
 class TranslationCollector
 {
+    const TRANSLATION_TYPE_EXISTING = 'existing';
+    const TRANSLATION_TYPE_MISSING = 'missing';
+
     /**
      * @var Magento\Store\Model\App\Emulation
      */
@@ -66,21 +69,22 @@ class TranslationCollector
         $this->helper = $helper;
     }
 
-    public function updateTranslationDatabase($storeId, $locale, $includeMissing = true)
+    public function updateTranslationDatabase($storeId, $locale, $translationType = '')
     {
-        $this->emulation->startEnvironmentEmulation($storeId);
-
-        $translations = $this->collectTranslations($locale);
-
-        if ($includeMissing) {
-            $missingTranslations = $this->collectMissingTranslations($locale);
-            if (!empty($missingTranslations)) {
-                $translations = array_merge($translations, $missingTranslations);
-            }
+        if (!in_array($translationType, [self::TRANSLATION_TYPE_MISSING, self::TRANSLATION_TYPE_EXISTING])) {
+            return false;
         }
 
-        $existingTranslation = $this->translateModel->getTranslationArray($storeId, $locale);
-        $translations = array_diff_key($translations, $existingTranslation);
+        $this->emulation->startEnvironmentEmulation($storeId);
+
+        if ($translationType == self::TRANSLATION_TYPE_EXISTING) {
+            $translations = $this->collectTranslations($locale);
+        } elseif ($translationType == self::TRANSLATION_TYPE_MISSING) {
+            $translations = $this->collectMissingTranslations($locale);
+        }
+
+        $databaseTranslations = $this->translateModel->getTranslationArray($storeId, $locale);
+        $translations = array_diff_key($translations, $databaseTranslations);
 
         $insertionCount = $this->createNewTranslations($translations, $storeId, $locale);
 
@@ -126,22 +130,33 @@ class TranslationCollector
     public function createNewTranslations($translations, $storeId, $locale)
     {
         $insertionCount = 0;
-        foreach ($translations as $key => $value) {
+        foreach ($translations as $originalString => $translate) {
             /**
-             * Due to Magento table limitation strings longer than 255 characters are being cut off, so these are excluded for now
+             * Due to Magento table limitation strings longer than 255 characters
+             * are being cut off, so these are excluded for now
              */
-            if (strlen($key) > 255 || strlen($value) > 255) {
+            if (strlen($originalString) > 255 || strlen($translate) > 255) {
                 continue;
             }
 
-            $different = ($value == $key) ? 0 : 1;
+            /** Filter empty value's */
+            if (empty($originalString)) {
+                continue;
+            }
+
+            /** Make translation identical to original string if no translation was found */
+            if (empty($translate)) {
+                $translate = $originalString;
+            }
+
+            $different = ($translate == $originalString) ? 0 : 1;
 
             $data = array(
-                'translate' => $value,
+                'translate' => $translate,
                 'store_id' => $storeId,
                 'locale' => $locale,
-                'string' => $key,
-                'crc_string' => crc32($key),
+                'string' => $originalString,
+                'crc_string' => crc32($originalString),
                 'different' => $different
             );
             $translation = $this->translationFactory->create();

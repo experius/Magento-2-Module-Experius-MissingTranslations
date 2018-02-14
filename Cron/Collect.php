@@ -48,15 +48,37 @@ class Collect
     /**
      * Executes collect cron, inserting all translations for active locales into the database on global scope
      */
-    public function execute()
+    public function existingTranslations()
     {
-        /** Global scope only for now, including missing translations */
+        /** Global scope only for now */
         $storeId = 0;
-        $includeMissing = true;
         $locales = $this->localeSourceModel->getLocaleMapping();
 
         foreach ($locales as $locale => $localeOptionArray) {
-            $this->translationCollector->updateTranslationDatabase($storeId, $locale, $includeMissing);
+            $this->translationCollector->updateTranslationDatabase(
+                $storeId,
+                $locale,
+                \Experius\MissingTranslations\Model\TranslationCollector::TRANSLATION_TYPE_EXISTING
+            );
+        }
+    }
+
+    /**
+     * Insert all missing translations found in missing translation files
+     * for active locales into the database on global scope
+     */
+    public function missingTranslations()
+    {
+        /** Global scope only for now */
+        $storeId = 0;
+        $locales = $this->localeSourceModel->getLocaleMapping();
+
+        foreach ($locales as $locale => $localeOptionArray) {
+            $this->translationCollector->updateTranslationDatabase(
+                $storeId,
+                $locale,
+                \Experius\MissingTranslations\Model\TranslationCollector::TRANSLATION_TYPE_MISSING
+            );
         }
     }
 }

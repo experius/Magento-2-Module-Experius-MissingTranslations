@@ -15,11 +15,20 @@ use Magento\Framework\Exception\LocalizedException;
 
 class Save extends \Magento\Backend\App\Action
 {
-
     /**
      * @var \Magento\Framework\App\Request\DataPersistorInterface
      */
     protected $dataPersistor;
+
+    /**
+     * @var \Experius\MissingTranslations\Model\TranslationFactory
+     */
+    protected $translationFactory;
+
+    /**
+     * @var \Experius\MissingTranslations\Helper\Data
+     */
+    protected $helper;
 
     /**
      * @array
@@ -27,26 +36,20 @@ class Save extends \Magento\Backend\App\Action
     protected $phrases;
 
     /**
-     * @var \Experius\MissingTranslations\Helper\Data]
-     */
-    protected $helper;
-
-    /**
      * Save constructor.
      * @param \Magento\Backend\App\Action\Context $context
-     * @param \Magento\Framework\Registry $coreRegistry
      * @param \Magento\Framework\App\Request\DataPersistorInterface $dataPersistor
      * @param \Experius\MissingTranslations\Helper\Data $helper
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\Registry $coreRegistry,
         \Magento\Framework\App\Request\DataPersistorInterface $dataPersistor,
+        \Experius\MissingTranslations\Model\TranslationFactory $translationFactory,
         \Experius\MissingTranslations\Helper\Data $helper
     ) {
         $this->dataPersistor = $dataPersistor;
+        $this->translationFactory = $translationFactory;
         $this->helper = $helper;
-
 
         parent::__construct($context);
     }
@@ -64,12 +67,11 @@ class Save extends \Magento\Backend\App\Action
         if ($data) {
             $id = $this->getRequest()->getParam('key_id');
         
-            $model = $this->_objectManager->create('Experius\MissingTranslations\Model\Translation')->load($id);
+            $model = $this->translationFactory->create()->load($id);
             if (!$model->getId() && $id) {
                 $this->messageManager->addError(__('This Translation no longer exists.'));
                 return $resultRedirect->setPath('*/*/');
             }
-
 
             if (!$model->getId() && !$id) {
                 $locale = $data['locale'];
@@ -81,6 +83,13 @@ class Save extends \Magento\Backend\App\Action
                     $data['string'] = $this->phrases[$line][0];
                     $this->helper->removeFromFile($line, $locale);
                 }
+            }
+
+            $data['different'] = 1;
+            if (isset($data['string']) && isset($data['translate'])
+                && $data['string'] == $data['translate']
+            ) {
+                $data['different'] = 0;
             }
 
             $model->setData($data);

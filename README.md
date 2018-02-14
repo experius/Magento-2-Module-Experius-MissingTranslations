@@ -53,31 +53,28 @@ In addition to gathering missing translations this module also supports database
 
 This makes it possible for merchants to edit any translation in the adminpanel of Magento 2.
 
-Gathering the translations happens nightly at 03:13 AM for the global scope.
+Gathering the translations happens nightly.
+03:13 AM server time, all existing csv translations are added to the database.
+03:23 AM server time, all missing translations found are added to the database.
+This is done on global scope for all locales that are used in atleast one storeview.
+
 Manually gathering the translations (and adding them to the database) is possible.
-This can be done by using the following Console command:
+This can be done by one of the following two Console commands:
 ```
-php bin/magento experius_missingtranslations:addtodatabase --global --locale nl_NL
+php bin/magento experius_missingtranslations:existing-translations-to-database --global --locale nl_NL
+```
+
+```
+php bin/magento experius_missingtranslations:missing-translations-to-database --global --locale nl_NL
 ```
 Herein --global is defined to save the translations for any storeview with the specified locale
 
-To include missing translations add the --include-missing parameter.
-This will only work if missing translations have been previously gathered.
-```
-php bin/magento experius_missingtranslations:addtodatabase --global --locale nl_NL --include-missing
-```
-
-To specify a specific store_id add the --store [store_id] parameter
-NOTE: This is not recommended unless translations differ for the same language for each storeview
+To specify a specific store_id add the store ID parameter (--store [store_id])
+WARNING: This is not recommended unless translations differ for the same language in separate storeviews
 Example:
 ```
 php bin/magento experius_missingtranslations:addtodatabase --store 1 --locale nl_NL
 ```
-
-
-## Additional information
-
-Nothing here at the moment
 
 # TODO
 
@@ -86,5 +83,5 @@ For missing translations
 - Add --module parameter to missing translation Console command
 
 For database translations
-- Add flag to translation database; if user edit's a translation, user_defined is flagged as true.
+- Add flag to translation table database (user_defined); if user edit's a translation, user_defined is flagged as true.
 - Add --force update for every entry that is not flagged as user_defined; to update csv changes into database.

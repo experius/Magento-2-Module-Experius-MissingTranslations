@@ -1,16 +1,30 @@
 <?php
 /**
- * Collect missing translations in specified folder or the entire Magento 2 Root
- * Copyright (C) 2016 Lewis Voncken
+ * A Magento 2 module named Experius/MissingTranslations
+ * Copyright (C) 2018 Experius
  * 
- * This file included in Experius/MissingTranslations is licensed under OSL 3.0
+ * This file is part of Experius/MissingTranslations.
  * 
- * http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * Please see LICENSE.txt for the full text of the OSL 3.0 license
+ * Experius/MissingTranslations is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace Experius\MissingTranslations\Controller\Adminhtml\Translation;
 
+/**
+ * Class InlineEdit
+ * @package Experius\MissingTranslations\Controller\Adminhtml\Translation
+ */
 class InlineEdit extends \Magento\Backend\App\Action
 {
 
@@ -22,10 +36,12 @@ class InlineEdit extends \Magento\Backend\App\Action
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\Controller\Result\JsonFactory $jsonFactory
+        \Magento\Framework\Controller\Result\JsonFactory $jsonFactory,
+        \Experius\MissingTranslations\Model\TranslationFactory $translationFactory
     ) {
         parent::__construct($context);
         $this->jsonFactory = $jsonFactory;
+        $this->translationFactory = $translationFactory;
     }
 
     /**
@@ -46,14 +62,21 @@ class InlineEdit extends \Magento\Backend\App\Action
                 $messages[] = __('Please correct the data sent.');
                 $error = true;
             } else {
-                foreach (array_keys($postItems) as $modelid) {
-                    /** @var \Magento\Cms\Model\Block $block */
-                    $model = $this->_objectManager->create('Experius\MissingTranslations\Model\Translation')->load($modelid);
+                foreach (array_keys($postItems) as $modelId) {
+                    $model = $this->translationFactory->create()->load($modelId);
+                    $data = $model->getData();
+                    $data['different'] = 1;
+                    if (isset($data['string']) && isset($data['translate'])
+                        && $data['string'] == $data['translate']
+                    ) {
+                        $data['different'] = 0;
+                    }
+
                     try {
-                        $model->setData(array_merge($model->getData(), $postItems[$modelid]));
+                        $model->setData(array_merge($data, $postItems[$modelId]));
                         $model->save();
                     } catch (\Exception $e) {
-                        $messages[] = "[Translation ID: {$modelid}]  {$e->getMessage()}";
+                        $messages[] = "[Translation ID: {$modelId}]  {$e->getMessage()}";
                         $error = true;
                     }
                 }

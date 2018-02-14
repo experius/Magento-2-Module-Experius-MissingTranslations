@@ -41,8 +41,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 'different',
                 [
                     'type' => \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
-                    'nullable' => false,
-                    'default' => 0,
+                    'nullable' => true,
                     'comment' => 'Different'
                 ]
             );

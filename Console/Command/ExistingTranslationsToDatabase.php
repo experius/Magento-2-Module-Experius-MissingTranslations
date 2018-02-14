@@ -28,10 +28,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class AddTranslationsToDatabaseCommand
+ * Class ExistingTranslationsToDatabase
  * @package Experius\MissingTranslations\Console\Command
  */
-class AddTranslationsToDatabaseCommand extends Command
+class ExistingTranslationsToDatabase extends Command
 {
     const INPUT_KEY_LOCALE = 'locale';
     const SHORTCUT_KEY_LOCALE = 'l';
@@ -39,8 +39,6 @@ class AddTranslationsToDatabaseCommand extends Command
     const SHORTCUT_KEY_STORE = 's';
     const INPUT_KEY_GLOBAL = 'global';
     const SHORTCUT_KEY_GLOBAL = 'g';
-    const INPUT_KEY_INCLUDEMISSING = 'include-missing';
-    const SHORTCUT_KEY_INCLUDEMISSING = 'im';
 
     /**
      * @var Magento\Framework\App\State
@@ -92,25 +90,23 @@ class AddTranslationsToDatabaseCommand extends Command
 
         $storeId = $global ? '0' : $input->getOption(self::INPUT_KEY_STORE);
 
-        $includeMissing = false;
-        if ($input->getOption(self::INPUT_KEY_INCLUDEMISSING)) {
-            $includeMissing = true;
-        }
-
         $output->writeln(
-            'Inserting all csv translations'
-            . ($includeMissing ? ', including missing translations,' : '')
-            . ' into database for store id <info>' . $storeId
+            'Inserting all existing csv translations into database for store id <info>' . $storeId
             . '</info> and locale <info>' . $locale . '</info>'
         );
         $output->writeln('Still working... One moment.');
 
-        $insertionCount = $this->translationCollector->updateTranslationDatabase($storeId, $locale, $includeMissing);
+        $insertionCount = $this->translationCollector->updateTranslationDatabase(
+            $storeId,
+            $locale,
+            $translationType = \Experius\MissingTranslations\Model\TranslationCollector::TRANSLATION_TYPE_EXISTING
+        );
 
         if ($insertionCount > 0) {
-            $output->writeln('Insertion was successful, <info>' . $insertionCount . '</info> translations added');
+            $output->writeln('Insertion was successful, <info>'
+                . $insertionCount . '</info> existing csv translations added to database');
         } else {
-            $output->writeln('All translations were already present for this store and locale. Nothing was inserted.');
+            $output->writeln('Nothing was inserted. All found existing csv translations already present in database.');
         }
     }
 
@@ -119,8 +115,8 @@ class AddTranslationsToDatabaseCommand extends Command
      */
     protected function configure()
     {
-        $this->setName("experius_missingtranslations:addtodatabase");
-        $this->setDescription('Add all csv translations to database for easy editing');
+        $this->setName('experius_missingtranslations:existing-translations-to-database');
+        $this->setDescription('Add all existing csv translations to database for easy editing');
         $this->setDefinition([
             new InputOption(
                 self::INPUT_KEY_LOCALE,
@@ -136,19 +132,11 @@ class AddTranslationsToDatabaseCommand extends Command
                 ' Omit the parameter if a store is specified.'
             ),
             new InputOption(
-                self::INPUT_KEY_INCLUDEMISSING,
-                self::SHORTCUT_KEY_INCLUDEMISSING,
-                InputOption::VALUE_NONE,
-                'Use the --include-missing parameter to also add missing translations.' .
-                'Please run the collect action first to collect the missing translations.' .
-                'Omit the parameter to only add translated strings.'
-            ),
-            new InputOption(
                 self::INPUT_KEY_STORE,
                 self::SHORTCUT_KEY_STORE,
                 InputArgument::OPTIONAL,
                 'Use the --store parameter to parse store. (for DB translation check)'
-            ),
+            )
         ]);
         parent::configure();
     }
