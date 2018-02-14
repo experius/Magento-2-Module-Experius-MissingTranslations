@@ -1,7 +1,7 @@
 <?php
 /**
  * Add CSV translations as database translations
- * Copyright (C) 2016 Experius
+ * Copyright (C) 2018 Experius
  *
  * This file included in Experius/MissingTranslations is licensed under OSL 3.0
  *
@@ -17,6 +17,10 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class AddTranslationsToDatabaseCommand
+ * @package Experius\MissingTranslations\Console\Command
+ */
 class AddTranslationsToDatabaseCommand extends Command
 {
     const INPUT_KEY_LOCALE = 'locale';
@@ -72,7 +76,7 @@ class AddTranslationsToDatabaseCommand extends Command
      * @param \Magento\Framework\App\State $state
      * @param \Experius\MissingTranslations\Module\I18n\Parser\Parser $parser
      * @param \Experius\MissingTranslations\Model\Translation $translation
-     * @param \Magento\Translation\Model\ResourceModel\Translate $translateModel,
+     * @param \Magento\Translation\Model\ResourceModel\Translate $translateModel ,
      * @param \Experius\MissingTranslations\Helper\Data $helper
      */
     public function __construct(
@@ -97,7 +101,6 @@ class AddTranslationsToDatabaseCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         $this->state->setAreaCode('frontend');
         $this->emulation->startEnvironmentEmulation($input->getOption(self::INPUT_KEY_STORE));
 
@@ -124,6 +127,14 @@ class AddTranslationsToDatabaseCommand extends Command
             $includeMissing = true;
         }
 
+        $output->writeln(
+            'Inserting all csv translations'
+            . ($includeMissing ? ', including missing translations,' : '')
+            . ' into database for store id <info>' . $store
+            . '</info> and locale <info>' . $locale . '</info>'
+        );
+        $output->writeln('Still working... One moment.');
+
         $this->parser->loadTranslations($locale);
         $translations = $this->parser->getTranslations();
 
@@ -134,13 +145,14 @@ class AddTranslationsToDatabaseCommand extends Command
                 $missingTranslations[$phrase[0]] = $phrase[0];
             }
             if (!empty($missingTranslations)) {
-                $translations = array_merge($translations,$missingTranslations);
+                $translations = array_merge($translations, $missingTranslations);
             }
         }
 
-        $existingTranslation = $this->translateModel->getTranslationArray($store,$locale);
-        $translations = array_diff_key($translations,$existingTranslation);
+        $existingTranslation = $this->translateModel->getTranslationArray($store, $locale);
+        $translations = array_diff_key($translations, $existingTranslation);
 
+        $insertionCount = 0;
         foreach ($translations as $key => $value) {
             /**
              * Due to Magento table limitation strings longer than 255 characters are being cut off, so these are excluded for now
@@ -148,25 +160,33 @@ class AddTranslationsToDatabaseCommand extends Command
             if (strlen($key) > 255 || strlen($value) > 255) {
                 continue;
             }
+
+            $different = ($value == $key) ? 0 : 1;
+
             $data = array(
                 'translate' => $value,
                 'store_id' => $store,
                 'locale' => $locale,
                 'string' => $key,
-                'crc_string' => crc32($key)
+                'crc_string' => crc32($key),
+                'different' => $different
             );
             $translation = $this->translationFactory->create();
             $translation->setData($data);
             try {
                 $translation->save();
+                $insertionCount++;
             } catch (Exception $e) {
-                var_dump($e->getMessage());
-                echo "\n";
+                $output->writeln('<error>' . $e->getMessage() . '</error>');
             }
         }
 
         $this->emulation->stopEnvironmentEmulation();
-        $output->writeln('<info>Inserted all csv translations' . ($includeMissing ? ', including missing translations, ' : '') .  ' into database for store id "' . $store . '" and locale "' . $locale . '"</info>');
+        if ($insertionCount > 0) {
+            $output->writeln('Insertion was successful, <info>' . $insertionCount . '</info> translations added');
+        } else {
+            $output->writeln('All translations were already present for this store and locale. Nothing was inserted.');
+        }
     }
 
     /**
@@ -207,6 +227,4 @@ class AddTranslationsToDatabaseCommand extends Command
         ]);
         parent::configure();
     }
-
-
 }

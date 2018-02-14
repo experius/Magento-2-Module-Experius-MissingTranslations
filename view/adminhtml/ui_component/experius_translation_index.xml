@@ -11,12 +11,6 @@
 		</item>
 		<item name="spinner" xsi:type="string">experius_translation_columns</item>
 		<item name="buttons" xsi:type="array">
-			<!--<item name="add" xsi:type="array">-->
-				<!--<item name="name" xsi:type="string">add</item>-->
-				<!--<item name="label" xsi:type="string">Translate String</item>-->
-				<!--<item name="class" xsi:type="string">secondary</item>-->
-				<!--<item name="url" xsi:type="string">*/*/new</item>-->
-			<!--</item>-->
 			<item name="translate" xsi:type="array">
 				<item name="name" xsi:type="string">translate</item>
 				<item name="label" xsi:type="string">Translate Missing String</item>
@@ -142,10 +136,11 @@
 			<argument name="data" xsi:type="array">
 				<item name="options" xsi:type="object">Magento\Eav\Model\Entity\Attribute\Source\Boolean</item>
 				<item name="config" xsi:type="array">
-					<item name="filter" xsi:type="string">select</item>
 					<item name="label" translate="true" xsi:type="string">Translation different</item>
+					<item name="filter" xsi:type="string">select</item>
 					<item name="dataType" xsi:type="string">select</item>
 					<item name="component" xsi:type="string">Magento_Ui/js/grid/columns/select</item>
+					<item name="sortable" xsi:type="string">true</item>
 				</item>
 			</argument>
 		</column>
