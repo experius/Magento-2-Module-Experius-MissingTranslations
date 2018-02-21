@@ -1,6 +1,6 @@
 {
   "name": "experius/module-missingtranslations",
-  "description": "Collect missing translations in specified folder or the entire Magento 2 Root",
+  "description": "Collect missing translations in specified folder or the entire Magento 2 Root. Adds database editing and management of translations.",
   "license": "proprietary",
   "authors": [
     {
@@ -10,6 +10,14 @@
     {
       "name": "Mr. Lewis",
       "email": "lewis@experius.nl"
+    },
+    {
+      "name": "Ruben Panis",
+      "email": "ruben@experius.nl"
+    },
+    {
+      "name": "Boris van Katwijk",
+      "email": "boris@experius.nl"
     }
   ],
   "minimum-stability": "dev",

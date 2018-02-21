@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="default">
+        <job name="experius_missingtranslations_add_existing_to_database" instance="Experius\MissingTranslations\Cron\Collect" method="existingTranslations">
+            <schedule>13 3 * * *</schedule>
+        </job>
+        <job name="experius_missingtranslations_add_missing_to_database" instance="Experius\MissingTranslations\Cron\Collect" method="missingTranslations">
+            <schedule>23 3 * * *</schedule>
+        </job>
+    </group>
+</config>

@@ -1,12 +1,22 @@
 <?php
 /**
- * Collect missing translations in specified folder or the entire Magento 2 Root
- * Copyright (C) 2016 Experius
+ * A Magento 2 module named Experius/MissingTranslations
+ * Copyright (C) 2018 Experius
  *
- * This file included in Experius/MissingTranslations is licensed under OSL 3.0
+ * This file is part of Experius/MissingTranslations.
  *
- * http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * Please see LICENSE.txt for the full text of the OSL 3.0 license
+ * Experius/MissingTranslations is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace Experius\MissingTranslations\Console\Command;
@@ -18,9 +28,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Experius\MissingTranslations\Module\I18n\ServiceLocator;
 
+/**
+ * Class CollectMissingTranslationsCommand
+ * @package Experius\MissingTranslations\Console\Command
+ */
 class CollectMissingTranslationsCommand extends Command
 {
-
     const INPUT_KEY_DIRECTORY = 'directory';
     const INPUT_KEY_OUTPUT = 'output';
     const SHORTCUT_KEY_OUTPUT = 'o';
@@ -64,7 +77,6 @@ class CollectMissingTranslationsCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         $directory = $input->getArgument(self::INPUT_KEY_DIRECTORY);
         if ($input->getOption(self::INPUT_KEY_MAGENTO)) {
             $directory = BP;
@@ -152,6 +164,4 @@ class CollectMissingTranslationsCommand extends Command
         ]);
         parent::configure();
     }
-
-
 }

@@ -11,12 +11,6 @@
 		</item>
 		<item name="spinner" xsi:type="string">experius_translation_columns</item>
 		<item name="buttons" xsi:type="array">
-			<!--<item name="add" xsi:type="array">-->
-				<!--<item name="name" xsi:type="string">add</item>-->
-				<!--<item name="label" xsi:type="string">Translate String</item>-->
-				<!--<item name="class" xsi:type="string">secondary</item>-->
-				<!--<item name="url" xsi:type="string">*/*/new</item>-->
-			<!--</item>-->
 			<item name="translate" xsi:type="array">
 				<item name="name" xsi:type="string">translate</item>
 				<item name="label" xsi:type="string">Translate Missing String</item>
@@ -48,7 +42,7 @@
 				<item name="sticky" xsi:type="boolean">true</item>
 			</item>
 		</argument>
-		<bookmark name="bookmark"/>
+		<bookmark name="bookmarks"/>
 		<columnsControls name="columns_controls"/>
 		<filters name="listing_filters"/>
 		<paging name="listing_paging"/>
@@ -58,7 +52,7 @@
 			<item name="config" xsi:type="array">
 				<item name="editorConfig" xsi:type="array">
 					<item name="selectProvider" xsi:type="string">experius_translation_index.experius_translation_index.experius_translation_columns.ids</item>
-					<item name="enabled" xsi:type="boolean">false</item>
+					<item name="enabled" xsi:type="boolean">true</item>
 					<item name="indexField" xsi:type="string">key_id</item>
 					<item name="clientConfig" xsi:type="array">
 						<item name="saveUrl" path="experius_missingtranslations/Translation/inlineEdit" xsi:type="url"/>
@@ -94,17 +88,6 @@
 				</item>
 			</argument>
 		</column>
-		<column name="locale">
-			<argument name="data" xsi:type="array">
-				<item name="options" xsi:type="object">Experius\MissingTranslations\Model\Config\Source\Locale</item>
-				<item name="config" xsi:type="array">
-					<item name="filter" xsi:type="string">select</item>
-					<item name="label" translate="true" xsi:type="string">Locale</item>
-					<item name="dataType" xsi:type="string">select</item>
-					<item name="component" xsi:type="string">Magento_Ui/js/grid/columns/select</item>
-				</item>
-			</argument>
-		</column>
 		<column name="string">
 			<argument name="data" xsi:type="array">
 				<item name="config" xsi:type="array">
@@ -116,8 +99,38 @@
 		<column name="translate">
 			<argument name="data" xsi:type="array">
 				<item name="config" xsi:type="array">
+					<item name="editor" xsi:type="array">
+						<item name="editorType" xsi:type="string">text</item>
+						<item name="validation" xsi:type="array">
+							<item name="required-entry" xsi:type="boolean">true</item>
+						</item>
+					</item>
 					<item name="filter" xsi:type="string">text</item>
 					<item name="label" translate="true" xsi:type="string">Translated String</item>
+				</item>
+			</argument>
+		</column>
+		<column name="locale">
+			<argument name="data" xsi:type="array">
+				<item name="options" xsi:type="object">Experius\MissingTranslations\Model\Config\Source\Locale</item>
+				<item name="config" xsi:type="array">
+					<item name="filter" xsi:type="string">select</item>
+					<item name="label" translate="true" xsi:type="string">Locale</item>
+					<item name="dataType" xsi:type="string">select</item>
+					<item name="component" xsi:type="string">Magento_Ui/js/grid/columns/select</item>
+				</item>
+			</argument>
+		</column>
+		<column name="different">
+			<argument name="data" xsi:type="array">
+				<item name="options" xsi:type="object">Magento\Eav\Model\Entity\Attribute\Source\Boolean</item>
+				<item name="config" xsi:type="array">
+					<item name="label" translate="true" xsi:type="string">Has a translation</item>
+					<item name="filter" xsi:type="string">select</item>
+					<item name="dataType" xsi:type="string">select</item>
+					<item name="component" xsi:type="string">Magento_Ui/js/grid/columns/select</item>
+					<item name="sortable" xsi:type="string">true</item>
+					<item name="bodyTmpl" xsi:type="string">ui/grid/cells/html</item>
 				</item>
 			</argument>
 		</column>

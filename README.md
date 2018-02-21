@@ -47,10 +47,41 @@ For example generate missing nl_NL strings:
 php bin/magento experius_missingtranslations:collect --output app/i18n/experius/missing/nl_NL.csv --magento --locale nl_NL
 ```
 
-# Additional information
+## Translations to database
 
+In addition to gathering missing translations this module also supports database translation (formerly known as inline translation)
 
-# TODO:
+This makes it possible for merchants to edit any translation in the adminpanel of Magento 2.
 
- - ``--vendor`` param
- - ``--module`` param
+Gathering the translations happens nightly.
+03:13 AM server time, all existing csv translations are added to the database.
+03:23 AM server time, all missing translations found are added to the database.
+This is done on global scope for all locales that are used in atleast one storeview.
+
+Manually gathering the translations (and adding them to the database) is possible.
+This can be done by one of the following two Console commands:
+```
+php bin/magento experius_missingtranslations:existing-translations-to-database --global --locale nl_NL
+```
+
+```
+php bin/magento experius_missingtranslations:missing-translations-to-database --global --locale nl_NL
+```
+Herein --global is defined to save the translations for any storeview with the specified locale
+
+To specify a specific store_id add the store ID parameter (--store [store_id])
+WARNING: This is not recommended unless translations differ for the same language in separate storeviews
+Example:
+```
+php bin/magento experius_missingtranslations:addtodatabase --store 1 --locale nl_NL
+```
+
+# TODO
+
+For missing translations
+- Add --vendor parameter to missing translation Console command
+- Add --module parameter to missing translation Console command
+
+For database translations
+- Add flag to translation table database (user_defined); if user edit's a translation, user_defined is flagged as true.
+- Add --force update for every entry that is not flagged as user_defined; to update csv changes into database.

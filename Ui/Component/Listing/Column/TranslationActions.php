@@ -1,22 +1,40 @@
 <?php
 /**
- * Collect missing translations in specified folder or the entire Magento 2 Root
- * Copyright (C) 2016 Lewis Voncken
+ * A Magento 2 module named Experius/MissingTranslations
+ * Copyright (C) 2018 Experius
  * 
- * This file included in Experius/MissingTranslations is licensed under OSL 3.0
+ * This file is part of Experius/MissingTranslations.
  * 
- * http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * Please see LICENSE.txt for the full text of the OSL 3.0 license
+ * Experius/MissingTranslations is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace Experius\MissingTranslations\Ui\Component\Listing\Column;
 
+/**
+ * Class TranslationActions
+ * @package Experius\MissingTranslations\Ui\Component\Listing\Column
+ */
 class TranslationActions extends \Magento\Ui\Component\Listing\Columns\Column
 {
 
     const URL_PATH_EDIT = 'experius_missingtranslations/translation/edit';
     const URL_PATH_DELETE = 'experius_missingtranslations/translation/delete';
     const URL_PATH_DETAILS = 'experius_missingtranslations/translation/details';
+
+    /**
+     * @var \Magento\Framework\UrlInterface
+     */
     protected $urlBuilder;
 
     /**
@@ -75,7 +93,7 @@ class TranslationActions extends \Magento\Ui\Component\Listing\Columns\Column
                 }
             }
         }
-        
+
         return $dataSource;
     }
 }

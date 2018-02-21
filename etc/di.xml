@@ -17,6 +17,8 @@
 		<arguments>
 			<argument name="commands" xsi:type="array">
 				<item name="CollectMissingTranslationsCommand" xsi:type="object">Experius\MissingTranslations\Console\Command\CollectMissingTranslationsCommand</item>
+				<item name="ExistingTranslationsToDatabase" xsi:type="object">Experius\MissingTranslations\Console\Command\ExistingTranslationsToDatabase</item>
+				<item name="MissingTranslationsToDatabase" xsi:type="object">Experius\MissingTranslations\Console\Command\MissingTranslationsToDatabase</item>
 			</argument>
 		</arguments>
 	</type>
