@@ -54,22 +54,37 @@ class Save extends \Magento\Backend\App\Action
     protected $phrases;
 
     /**
+     * @var \Magento\Translation\Model\Inline\CacheManager
+     */
+    protected $cacheManager;
+
+    /**
+     * @var \Magento\Framework\Locale\ResolverInterface
+     */
+    protected $localeResolver;
+
+    /**
      * Save constructor.
      * @param \Magento\Backend\App\Action\Context $context
      * @param \Magento\Framework\App\Request\DataPersistorInterface $dataPersistor
+     * @param \Experius\MissingTranslations\Model\TranslationFactory $translationFactory
      * @param \Experius\MissingTranslations\Helper\Data $helper
+     * @param \Magento\Backend\Model\Auth\Session $authSession
+     * @param \Magento\Framework\Locale\ResolverInterface $localeResolver
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\App\Request\DataPersistorInterface $dataPersistor,
         \Experius\MissingTranslations\Model\TranslationFactory $translationFactory,
         \Experius\MissingTranslations\Helper\Data $helper,
-        \Magento\Backend\Model\Auth\Session $authSession
+        \Magento\Backend\Model\Auth\Session $authSession,
+        \Magento\Framework\Locale\ResolverInterface $localeResolver
     ) {
         $this->dataPersistor = $dataPersistor;
         $this->translationFactory = $translationFactory;
         $this->helper = $helper;
         $this->authSession = $authSession;
+        $this->localeResolver = $localeResolver;
 
         parent::__construct($context);
     }
@@ -128,6 +143,8 @@ class Save extends \Magento\Backend\App\Action
                 $model->save();
                 $this->messageManager->addSuccess(__('You saved the Translation.'));
                 $this->dataPersistor->clear('experius_missingtranslations_translation');
+
+                $this->helper->updateJsTranslationJsonFiles($data['locale']);
 
                 if ($this->getRequest()->getParam('back')) {
                     return $resultRedirect->setPath('*/*/edit', ['key_id' => $model->getId()]);
