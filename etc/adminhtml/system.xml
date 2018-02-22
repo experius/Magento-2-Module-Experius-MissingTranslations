@@ -1,10 +1,24 @@
 <?xml version="1.0" ?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <section id="general" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="100" translate="label">
             <group id="locale" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label">
-                <field id="language_vendor" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="1" translate="label" type="text" canRestore="1">
-                    <label>Language Vendor for Missing Translations</label>
+                <field id="language_vendor" translate="label" type="text" sortOrder="1" showInDefault="1"
+                       showInStore="1" showInWebsite="1" canRestore="1">
+                    <label>Language vendor for missing translations</label>
+                </field>
+                <field id="cron_existing_translations" translate="label comment" type="select" sortOrder="2"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Existing translations cron enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>If enabled all newly found existing translations are inserted into the database every night</comment>
+                </field>
+                <field id="cron_missing_translations" translate="label comment" type="select" sortOrder="3"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Missing translations cron enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>If enabled all newly found missing translations are inserted into the database every night</comment>
                 </field>
             </group>
         </section>
