@@ -96,6 +96,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
         $themes = $this->themePackageList->getThemes();
 
+        $staticVersionUpdateRequired = false;
         foreach ($themes as $relativePath => $theme) {
             $jsonFilePath = $this->directoryList->getPath(\Magento\Framework\App\Filesystem\DirectoryList::STATIC_VIEW) .
                 \DIRECTORY_SEPARATOR .
@@ -104,7 +105,14 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                 $locale .
                 \DIRECTORY_SEPARATOR .
                 \Magento\Translation\Model\Js\Config::DICTIONARY_FILE_NAME;
-            $this->driverFile->filePutContents($jsonFilePath, $translationsJson);
+            if ($this->driverFile->isExists($jsonFilePath)) {
+                $this->driverFile->filePutContents($jsonFilePath, $translationsJson);
+                $staticVersionUpdateRequired = true;
+            }
+        }
+
+        if ($staticVersionUpdateRequired) {
+            $this->updateStaticVersionNumber();
         }
     }
 
