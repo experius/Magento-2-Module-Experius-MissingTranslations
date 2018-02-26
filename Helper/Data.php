@@ -30,28 +30,99 @@ use Magento\Framework\DataObject;
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
     /**
-     * @var \Magento\Framework\App\Filesystem\DirectoryList
-     */
-    protected $directory_list;
-
-    /**
      * @var array
      */
     protected $phrases = [];
 
     /**
+     * @var \Magento\Framework\App\Filesystem\DirectoryList
+     */
+    protected $directoryList;
+
+    /**
+     * @var \Magento\Framework\Filesystem\Driver\File
+     */
+    protected $driverFile;
+
+    /**
+     * @var \Magento\Framework\Translate\ResourceInterface
+     */
+    protected $translateResource;
+
+    /**
+     * @var \Magento\Framework\App\View\Deployment\Version\StorageInterface
+     */
+    protected $versionStorage;
+
+    /**
+     * @var \Magento\Framework\View\Design\Theme\ThemePackageList
+     */
+    protected $themePackageList;
+
+    /**
      * Data constructor.
      * @param \Magento\Framework\App\Helper\Context $context
-     * @param \Magento\Framework\App\Filesystem\DirectoryList $directory_list
+     * @param \Magento\Framework\App\Filesystem\DirectoryList $directoryList
+     * @param \Magento\Framework\App\View\Deployment\Version\StorageInterface $versionStorage
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
-        \Magento\Framework\App\Filesystem\DirectoryList $directory_list
-    )
-    {
-        $this->directory_list = $directory_list;
+        \Magento\Framework\App\Filesystem\DirectoryList $directoryList,
+        \Magento\Framework\Filesystem\Driver\File $driverFile,
+        \Magento\Framework\Translate\ResourceInterface $translateResource,
+        \Magento\Framework\App\View\Deployment\Version\StorageInterface $versionStorage,
+        \Magento\Framework\View\Design\Theme\ThemePackageList $themePackageList
+    ) {
+        $this->directoryList = $directoryList;
+        $this->driverFile = $driverFile;
+        $this->translateResource = $translateResource;
+        $this->versionStorage = $versionStorage;
+        $this->themePackageList = $themePackageList;
 
         parent::__construct($context);
+    }
+
+    /**
+     * Update js-translation.json files in static content for specific locale
+     */
+    public function updateJsTranslationJsonFiles($locale = null)
+    {
+        if (!$locale) {
+            return;
+        }
+
+        $translations = $this->translateResource->getTranslationArray(null, $locale);
+        $translationsJson = json_encode($translations);
+
+        $themes = $this->themePackageList->getThemes();
+
+        $staticVersionUpdateRequired = false;
+        foreach ($themes as $relativePath => $theme) {
+            $jsonFilePath = $this->directoryList->getPath(\Magento\Framework\App\Filesystem\DirectoryList::STATIC_VIEW) .
+                \DIRECTORY_SEPARATOR .
+                $relativePath .
+                \DIRECTORY_SEPARATOR .
+                $locale .
+                \DIRECTORY_SEPARATOR .
+                \Magento\Translation\Model\Js\Config::DICTIONARY_FILE_NAME;
+            if ($this->driverFile->isExists($jsonFilePath)) {
+                $this->driverFile->filePutContents($jsonFilePath, $translationsJson);
+                $staticVersionUpdateRequired = true;
+            }
+        }
+
+        if ($staticVersionUpdateRequired) {
+            $this->updateStaticVersionNumber();
+        }
+    }
+
+    /**
+     * Updated static content version number
+     */
+    public function updateStaticVersionNumber()
+    {
+        $version = (new \DateTime())->getTimestamp();
+        $this->versionStorage->save($version);
     }
 
     /**
@@ -109,7 +180,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public function getFileName($locale = 'en_US')
     {
         $vendor = $this->getLanguageVendor();
-        $filename = $this->directory_list->getRoot() . '/app/i18n/'. $vendor . '/missing/' . $locale . '.csv';
+        $filename = $this->directoryList->getRoot() . '/app/i18n/'. $vendor . '/missing/' . $locale . '.csv';
 
         return (file_exists($filename)) ? $filename : false;
     }

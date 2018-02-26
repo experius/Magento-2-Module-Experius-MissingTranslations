@@ -27,6 +27,14 @@ namespace Experius\MissingTranslations\Cron;
  */
 class Collect
 {
+    const XML_PATH_EXISTING_TRANSLATIONS_CRON = 'general/locale/cron_existing_translations';
+    const XML_PATH_MISSING_TRANSLATIONS_CRON = 'general/locale/cron_missing_translations';
+
+    /**
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     */
+    protected $scopeConfig;
+
     /**
      * @var \Experius\MissingTranslations\Model\Config\Source\Locale
      */
@@ -38,9 +46,11 @@ class Collect
     protected $translationCollector;
 
     public function __construct(
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Experius\MissingTranslations\Model\Config\Source\Locale $locale,
         \Experius\MissingTranslations\Model\TranslationCollector $translationCollector
     ) {
+        $this->scopeConfig = $scopeConfig;
         $this->localeSourceModel = $locale;
         $this->translationCollector = $translationCollector;
     }
@@ -50,6 +60,10 @@ class Collect
      */
     public function existingTranslations()
     {
+        if (!$this->scopeConfig->isSetFlag(self::XML_PATH_EXISTING_TRANSLATIONS_CRON)) {
+            return;
+        }
+
         /** Global scope only for now */
         $storeId = 0;
         $locales = $this->localeSourceModel->getLocaleMapping();
@@ -69,6 +83,10 @@ class Collect
      */
     public function missingTranslations()
     {
+        if (!$this->scopeConfig->isSetFlag(self::XML_PATH_MISSING_TRANSLATIONS_CRON)) {
+            return;
+        }
+
         /** Global scope only for now */
         $storeId = 0;
         $locales = $this->localeSourceModel->getLocaleMapping();

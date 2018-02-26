@@ -27,21 +27,37 @@ namespace Experius\MissingTranslations\Controller\Adminhtml\Translation;
  */
 class InlineEdit extends \Magento\Backend\App\Action
 {
-
+    /**
+     * @var \Magento\Framework\Controller\Result\JsonFactory
+     */
     protected $jsonFactory;
 
     /**
+     * @var \Experius\MissingTranslations\Model\TranslationFactory
+     */
+    protected $translationFactory;
+
+    /**
+     * @var \Experius\MissingTranslations\Helper\Data
+     */
+    protected $helper;
+    /**
+     * InlineEdit constructor.
      * @param \Magento\Backend\App\Action\Context $context
      * @param \Magento\Framework\Controller\Result\JsonFactory $jsonFactory
+     * @param \Experius\MissingTranslations\Model\TranslationFactory $translationFactory
+     * @param \Experius\MissingTranslations\Helper\Data $helper
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\Controller\Result\JsonFactory $jsonFactory,
-        \Experius\MissingTranslations\Model\TranslationFactory $translationFactory
+        \Experius\MissingTranslations\Model\TranslationFactory $translationFactory,
+        \Experius\MissingTranslations\Helper\Data $helper
     ) {
         parent::__construct($context);
         $this->jsonFactory = $jsonFactory;
         $this->translationFactory = $translationFactory;
+        $this->helper = $helper;
     }
 
     /**
@@ -75,6 +91,9 @@ class InlineEdit extends \Magento\Backend\App\Action
                     try {
                         $model->setData(array_merge($data, $postItems[$modelId]));
                         $model->save();
+
+                        $this->helper->updateJsTranslationJsonFiles($data['locale']);
+
                     } catch (\Exception $e) {
                         $messages[] = "[Translation ID: {$modelId}]  {$e->getMessage()}";
                         $error = true;
