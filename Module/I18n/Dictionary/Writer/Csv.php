@@ -26,17 +26,12 @@ class Csv implements WriterInterface
      */
     protected $_fileHandler;
 
-    protected $delimiter;
-
-    protected $enclosure;
-
     /**
      * Writer construct
      *
      * @param string $outputFilename
-     * @throws \InvalidArgumentException
      */
-    public function __construct($outputFilename, $delimiter = ',', $enclosure = '"')
+    public function __construct($outputFilename)
     {
         if (false === ($fileHandler = @fopen($outputFilename, 'w'))) {
             throw new \InvalidArgumentException(
@@ -44,8 +39,6 @@ class Csv implements WriterInterface
             );
         }
         $this->_fileHandler = $fileHandler;
-        $this->delimiter = $delimiter;
-        $this->enclosure = $enclosure;
     }
 
     /**
@@ -59,7 +52,7 @@ class Csv implements WriterInterface
             $fields[] = $contextValue;
         }
 
-        fputcsv($this->_fileHandler, $fields, $this->delimiter, $this->enclosure);
+        fputcsv($this->_fileHandler, $fields);
     }
 
     /**

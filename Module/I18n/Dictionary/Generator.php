@@ -78,7 +78,9 @@ class Generator
      * @param string $directory
      * @param string $outputFilename
      * @param bool $withContext
-     * @throws \UnexpectedValueException
+     * @param string $locale
+     * @param string $delimiter
+     * @param string $enclosure
      * @return void
      */
     public function generate($directory, $outputFilename, $withContext = false, $locale = 'en_US', $delimiter = ',', $enclosure = '"')
@@ -103,10 +105,10 @@ class Generator
      * @param string $outputFilename
      * @return WriterInterface
      */
-    protected function getDictionaryWriter($outputFilename, $delimiter = ',', $enclusere = '"')
+    protected function getDictionaryWriter($outputFilename)
     {
         if (null === $this->writer) {
-            $this->writer = $this->factory->createDictionaryWriter($outputFilename, $delimiter, $enclusere);
+            $this->writer = $this->factory->createDictionaryWriter($outputFilename);
         }
         return $this->writer;
     }

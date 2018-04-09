@@ -35,16 +35,10 @@ use Experius\MissingTranslations\Module\I18n\ServiceLocator;
 class CollectMissingTranslationsCommand extends Command
 {
     const INPUT_KEY_DIRECTORY = 'directory';
-    const INPUT_KEY_OUTPUT = 'output';
-    const SHORTCUT_KEY_OUTPUT = 'o';
     const INPUT_KEY_MAGENTO = 'magento';
     const SHORTCUT_KEY_MAGENTO = 'm';
     const INPUT_KEY_LOCALE = 'locale';
     const SHORTCUT_KEY_LOCALE = 'l';
-    const INPUT_KEY_DELIMITER = 'delimiter';
-    const SHORTCUT_KEY_DELIMITER = 'd';
-    const INPUT_KEY_ENCLOSURE = 'enclosure';
-    const SHORTCUT_KEY_ENCLOSURE = 'e';
     const INPUT_KEY_STORE = 'store';
     const SHORTCUT_KEY_STORE = 's';
 
@@ -59,16 +53,24 @@ class CollectMissingTranslationsCommand extends Command
     protected $state;
 
     /**
+     * @var Experius\MissingTranslations\Helper\Data
+     */
+    protected $helper;
+
+    /**
      * CollectMissingTranslationsCommand constructor.
-     * @param Magento\Store\Model\App\Emulation $emulation
-     * @param Magento\Framework\App\State $state
+     * @param \Magento\Store\Model\App\Emulation $emulation
+     * @param \Magento\Framework\App\State $state
+     * @param \Experius\MissingTranslations\Helper\Data $helper
      */
     public function __construct(
         \Magento\Store\Model\App\Emulation $emulation,
-        \Magento\Framework\App\State $state
+        \Magento\Framework\App\State $state,
+        \Experius\MissingTranslations\Helper\Data $helper
     ) {
         $this->emulation = $emulation;
         $this->state = $state;
+        $this->helper = $helper;
         parent::__construct();
     }
 
@@ -90,25 +92,15 @@ class CollectMissingTranslationsCommand extends Command
         $this->state->setAreaCode('frontend');
         $this->emulation->startEnvironmentEmulation($input->getOption(self::INPUT_KEY_STORE));
 
-        $enclosure = '"';
-        if ($input->getOption(self::INPUT_KEY_ENCLOSURE)) {
-            $enclosure = $input->getOption(self::INPUT_KEY_ENCLOSURE);
-        }
-        $delimiter = ',';
-        if ($input->getOption(self::INPUT_KEY_DELIMITER)) {
-            $delimiter = $input->getOption(self::INPUT_KEY_DELIMITER);
-        }
-
+        $fileName = $this->helper->getFileName($input->getOption(self::INPUT_KEY_LOCALE), false);
         $generator->generate(
             $directory,
-            $input->getOption(self::INPUT_KEY_OUTPUT),
+            $fileName,
             $input->getOption(self::INPUT_KEY_MAGENTO),
-            $input->getOption(self::INPUT_KEY_LOCALE),
-            $delimiter,
-            $enclosure
+            $input->getOption(self::INPUT_KEY_LOCALE)
         );
         $this->emulation->stopEnvironmentEmulation();
-        $output->writeln('<info>Collected Missing Translations for specified store</info>');
+        $output->writeln('<info>Collected Missing Translations for specified store and stored in ' . $fileName . ' </info>');
     }
 
     /**
@@ -125,12 +117,6 @@ class CollectMissingTranslationsCommand extends Command
                 'Directory path to parse. Not needed if --magento flag is set'
             ),
             new InputOption(
-                self::INPUT_KEY_OUTPUT,
-                self::SHORTCUT_KEY_OUTPUT,
-                InputOption::VALUE_REQUIRED,
-                'Path (including filename) to an output file. With no file specified, defaults to stdout.'
-            ),
-            new InputOption(
                 self::INPUT_KEY_MAGENTO,
                 self::SHORTCUT_KEY_MAGENTO,
                 InputOption::VALUE_NONE,
@@ -142,18 +128,6 @@ class CollectMissingTranslationsCommand extends Command
                 self::SHORTCUT_KEY_LOCALE,
                 InputOption::VALUE_REQUIRED,
                 'Use the --locale parameter to parse specific language.'
-            ),
-            new InputOption(
-                self::INPUT_KEY_DELIMITER,
-                self::SHORTCUT_KEY_DELIMITER,
-                InputArgument::OPTIONAL,
-                'Use the --delimiter parameter to change the csv delimiter.'
-            ),
-            new InputOption(
-                self::INPUT_KEY_ENCLOSURE,
-                self::SHORTCUT_KEY_ENCLOSURE,
-                InputArgument::OPTIONAL,
-                'Use the --delimiter parameter to change the csv enclosure.'
             ),
             new InputOption(
                 self::INPUT_KEY_STORE,

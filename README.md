@@ -23,13 +23,13 @@ Add a CLI command to Collect missing translations in specified folder or the ent
 ## CLI
 
 ```
-php bin/magento experius_missingtranslations:collect [-o|--output="..."] [-m|--magento] [-l|--locale="..."] [-d|--delimiter="..."] [-e|--enclosure="..."] [-s|--store="..."] [directory]
+php bin/magento experius_missingtranslations:collect [-m|--magento] [-l|--locale="..."] [-s|--store="..."] [directory]
 ```
 
 Use the command like this:
 
 ```
-php bin/magento experius_missingtranslations:collect --output app/i18n/experius/missing/nl_NL.csv --magento --locale nl_NL
+php bin/magento experius_missingtranslations:collect --magento --locale nl_NL
 ```
 
 then edit the file, remove the suffig `missing` and eventually transform it to a language pack by adding a `language.xml` and a `registration.php`
@@ -44,7 +44,7 @@ Besides transforming the file to a language pack it is possible to add new trans
 For example generate missing nl_NL strings:
 
 ```
-php bin/magento experius_missingtranslations:collect --output app/i18n/experius/missing/nl_NL.csv --magento --locale nl_NL
+php bin/magento experius_missingtranslations:collect --magento --locale nl_NL
 ```
 
 ## Translations to database

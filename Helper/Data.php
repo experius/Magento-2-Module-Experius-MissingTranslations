@@ -175,13 +175,18 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * Get filename of missing translation file based of locale
      *
      * @param string $locale
+     * @param bool $requiredExists
      * @return bool|string
      */
-    public function getFileName($locale = 'en_US')
+    public function getFileName($locale = 'en_US', $requiredExists = true)
     {
         $vendor = $this->getLanguageVendor();
-        $filename = $this->directoryList->getRoot() . '/app/i18n/'. $vendor . '/missing/' . $locale . '.csv';
+        $directoryPath = $this->directoryList->getRoot() . '/app/i18n/'. $vendor . '/missing/';
+        if (!is_dir($directoryPath)) {
+            mkdir($directoryPath, 0777, true);
+        }
+        $filename = $directoryPath . $locale . '.csv';
 
-        return (file_exists($filename)) ? $filename : false;
+        return (file_exists($filename) || $requiredExists == false) ? $filename : false;
     }
 }
