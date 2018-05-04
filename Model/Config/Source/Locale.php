@@ -47,8 +47,8 @@ class Locale implements \Magento\Framework\Option\ArrayInterface
     public function __construct(
         StoreManagerInterface $storeManager,
         ScopeConfigInterface $scopeConfig
-    )
-    {
+    ) {
+    
         $this->storeManager = $storeManager;
         $this->scopeConfig = $scopeConfig;
     }
@@ -72,7 +72,7 @@ class Locale implements \Magento\Framework\Option\ArrayInterface
 
         $mapping = [];
 
-        foreach($stores as $store) {
+        foreach ($stores as $store) {
             $locale = $this->scopeConfig->getValue(
                 'general/locale/code',
                 \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
@@ -86,5 +86,4 @@ class Locale implements \Magento\Framework\Option\ArrayInterface
 
         return $mapping;
     }
-
 }

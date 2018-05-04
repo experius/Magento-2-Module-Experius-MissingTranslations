@@ -39,32 +39,31 @@ abstract class AbstractAdapter implements AdapterInterface
     {
         $this->_phrases = [];
         $this->_file = $file;
-        if (
-            !strpos(strtolower($this->_file), 'adminhtml') && // exclude all adminhtml files
-            !strpos(strtolower($this->_file), 'import-export/') &&
-            !strpos(strtolower($this->_file), '/magento/module-backend/') &&
-            !strpos(strtolower($this->_file), '/magento/module-admin-gws/') &&
-            !strpos(strtolower($this->_file), '/magento/module-admin-notification/') &&
-            !strpos(strtolower($this->_file), '/magento/module-translation/') &&
-            !strpos(strtolower($this->_file), '/magento/module-support/') &&
-            !strpos(strtolower($this->_file), '/magento/module-versions-cms/') &&
-            !strpos(strtolower($this->_file), '/magento/module-visual-merchandiser/') &&
-            !strpos(strtolower($this->_file), '/magento/module-webapi/') &&
-            !strpos(strtolower($this->_file), '/magento/module-webapi-') &&
-            !strpos(strtolower($this->_file), '/magento/module-developer/') &&
-            !strpos(strtolower($this->_file), '/magento/module-cron/') &&
-            !strpos(strtolower($this->_file), '/magento/module-catalog-url-rewrite/') &&
-            !strpos(strtolower($this->_file), '/magento/module-catalog-url-rewrite-staging/') &&
-            !strpos(strtolower($this->_file), '/magento/module-cache-invalidate/') &&
-            !strpos(strtolower($this->_file), '/magento/module-encryption-key/') &&
-            !strpos(strtolower($this->_file), '/magento/module-indexer/') &&
-            !strpos(strtolower($this->_file), '/magento/module-message-queue/') &&
-            !strpos(strtolower($this->_file), '/magento/module-new-relic-reporting/') &&
-            !strpos(strtolower($this->_file), '/magento/module-resource-connections/') &&
-            !strpos(strtolower($this->_file), '/magento/module-security/') &&
-            !strpos(strtolower($this->_file), '/magento/module-logging/') &&
-            !strpos($this->_file, '/Test/Unit/') &&
-            !strpos($this->_file, '/magento/magento2-base/dev/')
+        if (strpos(strtolower($this->_file), 'adminhtml') === false && // exclude all adminhtml files
+            strpos(strtolower($this->_file), 'import-export/') === false &&
+            strpos(strtolower($this->_file), '/magento/module-backend/') === false &&
+            strpos(strtolower($this->_file), '/magento/module-admin-gws/') === false &&
+            strpos(strtolower($this->_file), '/magento/module-admin-notification/') === false &&
+            strpos(strtolower($this->_file), '/magento/module-translation/') === false &&
+            strpos(strtolower($this->_file), '/magento/module-support/') === false &&
+            strpos(strtolower($this->_file), '/magento/module-versions-cms/') === false &&
+            strpos(strtolower($this->_file), '/magento/module-visual-merchandiser/') === false &&
+            strpos(strtolower($this->_file), '/magento/module-webapi/') === false &&
+            strpos(strtolower($this->_file), '/magento/module-webapi-') === false &&
+            strpos(strtolower($this->_file), '/magento/module-developer/') === false &&
+            strpos(strtolower($this->_file), '/magento/module-cron/') === false &&
+            strpos(strtolower($this->_file), '/magento/module-catalog-url-rewrite/') === false &&
+            strpos(strtolower($this->_file), '/magento/module-catalog-url-rewrite-staging/') === false &&
+            strpos(strtolower($this->_file), '/magento/module-cache-invalidate/') === false &&
+            strpos(strtolower($this->_file), '/magento/module-encryption-key/') === false &&
+            strpos(strtolower($this->_file), '/magento/module-indexer/') === false &&
+            strpos(strtolower($this->_file), '/magento/module-message-queue/') === false &&
+            strpos(strtolower($this->_file), '/magento/module-new-relic-reporting/') === false &&
+            strpos(strtolower($this->_file), '/magento/module-resource-connections/') === false &&
+            strpos(strtolower($this->_file), '/magento/module-security/') === false &&
+            strpos(strtolower($this->_file), '/magento/module-logging/') === false &&
+            strpos($this->_file, '/Test/Unit/') === false &&
+            strpos($this->_file, '/magento/magento2-base/dev/') === false
         ) {
             $this->_parse();
         }

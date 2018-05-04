@@ -153,8 +153,7 @@ class Phrase
      */
     public function getTranslation()
     {
-		return $this->_translation;
-		
+        return $this->_translation;
     }
 
     /**

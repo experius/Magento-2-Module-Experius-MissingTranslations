@@ -17,7 +17,7 @@ use \Magento\Framework\Translate;
  */
 class Parser extends AbstractParser
 {
-	
+    
     /**
      * Parse one type
      *
@@ -44,7 +44,7 @@ class Parser extends AbstractParser
      */
     protected function _addPhrase($phraseData)
     {
-	    try {
+        try {
             $foundTranslation = $this->_translatePhrase($phraseData['phrase']);
             if ($foundTranslation == false) {
                 $phrase = $this->_factory->createPhrase([
@@ -63,13 +63,13 @@ class Parser extends AbstractParser
         }
     }
 
-	protected function _translatePhrase($phrase)
-	{
-	    $translations = $this->getTranslations();
-		if(array_key_exists($phrase, $translations)){
-	        return $translations[$phrase];
-		}else{
-			return false;
-		}
-	}
+    protected function _translatePhrase($phrase)
+    {
+        $translations = $this->getTranslations();
+        if (array_key_exists($phrase, $translations)) {
+            return $translations[$phrase];
+        } else {
+            return false;
+        }
+    }
 }

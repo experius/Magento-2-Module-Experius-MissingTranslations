@@ -34,14 +34,13 @@ class TranslatableString implements OptionSourceInterface
     public function toOptionArray()
     {
         if ($this->options === null) {
-            $this->options = array();
-            foreach($this->phrases as $line => $string) {
-                if (key_exists(1,$string) && $string[1] == '') {
-                    $this->options[] = array('value' => $line, 'label' => $string[0]);
+            $this->options = [];
+            foreach ($this->phrases as $line => $string) {
+                if (key_exists(1, $string) && $string[1] == '') {
+                    $this->options[] = ['value' => $line, 'label' => $string[0]];
                 }
             }
         }
         return $this->options;
     }
-
 }

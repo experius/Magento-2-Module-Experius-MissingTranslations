@@ -3,8 +3,8 @@
 
 namespace Experius\MissingTranslations\Controller\Adminhtml\Ajax;
 
-
-class Phrases extends \Magento\Framework\App\Action\Action {
+class Phrases extends \Magento\Framework\App\Action\Action
+{
 
     protected $resultPageFactory;
     protected $jsonHelper;
@@ -17,7 +17,7 @@ class Phrases extends \Magento\Framework\App\Action\Action {
         \Magento\Framework\Json\Helper\Data $jsonHelper,
         \Experius\MissingTranslations\Helper\Data $helper,
         \Magento\Backend\Model\UrlInterface $urlBuilder
-    ){
+    ) {
         $this->resultPageFactory = $resultPageFactory;
         $this->jsonHelper = $jsonHelper;
         $this->helper = $helper;
@@ -26,13 +26,14 @@ class Phrases extends \Magento\Framework\App\Action\Action {
     }
 
 
-    public function execute(){
+    public function execute()
+    {
         try {
             $phrases = $this->helper->getPhrases($this->getRequest()->getParam('locale'));
 
-            $options = array();
-            foreach($phrases as $line => $string) {
-                if (key_exists(1,$string) && $string[1] == '') {
+            $options = [];
+            foreach ($phrases as $line => $string) {
+                if (key_exists(1, $string) && $string[1] == '') {
                     $options[$line] = $string[0];
                 }
             }
@@ -46,10 +47,10 @@ class Phrases extends \Magento\Framework\App\Action\Action {
     }
 
 
-    public function jsonResponse($response = ''){
+    public function jsonResponse($response = '')
+    {
         return $this->getResponse()->representJson(
             $this->jsonHelper->jsonEncode($response)
         );
     }
-
 }

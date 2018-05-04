@@ -114,7 +114,7 @@ class TranslationCollector
     public function collectMissingTranslations($locale)
     {
         $missingPhrases = $this->helper->getPhrases($locale);
-        $missingTranslations = array();
+        $missingTranslations = [];
         foreach ($missingPhrases as $phrase) {
             $missingTranslations[$phrase[0]] = $phrase[0];
         }
@@ -151,14 +151,14 @@ class TranslationCollector
 
             $different = ($translate == $originalString) ? 0 : 1;
 
-            $data = array(
+            $data = [
                 'translate' => $translate,
                 'store_id' => $storeId,
                 'locale' => $locale,
                 'string' => $originalString,
                 'crc_string' => crc32($originalString),
                 'different' => $different
-            );
+            ];
             $translation = $this->translationFactory->create();
             $translation->setData($data);
             try {
@@ -170,5 +170,4 @@ class TranslationCollector
         }
         return $insertionCount;
     }
-
 }

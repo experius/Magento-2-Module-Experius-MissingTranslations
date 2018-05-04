@@ -31,18 +31,17 @@ class Store implements OptionSourceInterface
     {
         $stores = $this->storeManager->getStores($withDefault = true);
         if ($this->options === null) {
-            $this->options = array();
-            foreach($stores as $store) {
+            $this->options = [];
+            foreach ($stores as $store) {
                 if ($store->getStoreId() == 0) {
                     $label = 'Global Level';
                 } else {
                     $label = ' - ' . $store->getStoreId() . '. '   . $store->getName() . ' ( ' . $store->getCode() . ' )';
                 }
-                $this->options[$store->getStoreId()] = array('value' => $store->getStoreId(), 'label' => $label);
+                $this->options[$store->getStoreId()] = ['value' => $store->getStoreId(), 'label' => $label];
             }
         }
         ksort($this->options);
         return $this->options;
     }
-
 }

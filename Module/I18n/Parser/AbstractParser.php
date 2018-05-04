@@ -155,7 +155,7 @@ abstract class AbstractParser implements I18n\ParserInterface
 
         $translatorInterface = $objectManager->get('Magento\Framework\TranslateInterface');
         $translatorInterface->setLocale($locale);
-        $translatorInterface->loadData('frontend',true);
+        $translatorInterface->loadData('frontend', true);
         $this->_translations = $translatorInterface->getData();
     }
 

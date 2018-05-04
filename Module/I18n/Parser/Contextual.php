@@ -93,9 +93,9 @@ class Contextual extends AbstractParser
     protected function _translatePhrase($phrase)
     {
         $translations = $this->getTranslations();
-        if(array_key_exists($phrase, $translations)){
+        if (array_key_exists($phrase, $translations)) {
             return $translations[$phrase];
-        }else{
+        } else {
             return false;
         }
     }
