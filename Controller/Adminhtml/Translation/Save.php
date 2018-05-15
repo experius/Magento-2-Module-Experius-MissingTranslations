@@ -70,21 +70,19 @@ class Save extends \Magento\Backend\App\Action
      * @param \Experius\MissingTranslations\Model\TranslationFactory $translationFactory
      * @param \Experius\MissingTranslations\Helper\Data $helper
      * @param \Magento\Backend\Model\Auth\Session $authSession
-     * @param \Magento\Framework\Locale\ResolverInterface $localeResolver
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\App\Request\DataPersistorInterface $dataPersistor,
         \Experius\MissingTranslations\Model\TranslationFactory $translationFactory,
         \Experius\MissingTranslations\Helper\Data $helper,
-        \Magento\Backend\Model\Auth\Session $authSession,
-        \Magento\Framework\Locale\ResolverInterface $localeResolver
+        \Magento\Backend\Model\Auth\Session $authSession
     ) {
         $this->dataPersistor = $dataPersistor;
         $this->translationFactory = $translationFactory;
         $this->helper = $helper;
         $this->authSession = $authSession;
-        $this->localeResolver = $localeResolver;
+        $this->localeResolver = $context->getLocaleResolver();
 
         parent::__construct($context);
     }
