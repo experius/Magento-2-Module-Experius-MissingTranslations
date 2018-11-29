@@ -8,6 +8,7 @@
  * http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * Please see LICENSE.txt for the full text of the OSL 3.0 license
  */
+
 namespace Experius\MissingTranslations\Module\I18n;
 
 /**
@@ -65,13 +66,13 @@ class Factory
      */
     public function createPhrase(array $data)
     {
-    if("" != $data['phrase']){
-        return new Dictionary\Phrase(
-            $data['phrase'],
-            $data['translation'],
-            isset($data['context_type']) ? $data['context_type'] : null,
-            isset($data['context_value']) ? $data['context_value'] : null,
-            isset($data['quote']) ? $data['quote'] : null
+        if ("" != $data['phrase']) {
+            return new Dictionary\Phrase(
+                $data['phrase'],
+                $data['translation'],
+                isset($data['context_type']) ? $data['context_type'] : null,
+                isset($data['context_value']) ? $data['context_value'] : null,
+                isset($data['quote']) ? $data['quote'] : null
             );
         }
     }
