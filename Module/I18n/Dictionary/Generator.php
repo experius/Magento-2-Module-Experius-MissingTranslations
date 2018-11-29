@@ -96,7 +96,9 @@ class Generator
             throw new \UnexpectedValueException('No phrases found in the specified dictionary file.');
         }
         foreach ($phraseList as $phrase) {
+        if($phrase instanceof  Phrase){
             $this->getDictionaryWriter($outputFilename, $delimiter, $enclosure)->write($phrase);
+            }
         }
         $this->writer = null;
     }
