@@ -65,7 +65,8 @@ class Generator
         ParserInterface $contextualParser,
         Factory $factory,
         Options\ResolverFactory $optionsResolver
-    ) {
+    )
+    {
         $this->parser = $parser;
         $this->contextualParser = $contextualParser;
         $this->factory = $factory;
@@ -96,7 +97,9 @@ class Generator
             throw new \UnexpectedValueException('No phrases found in the specified dictionary file.');
         }
         foreach ($phraseList as $phrase) {
-            $this->getDictionaryWriter($outputFilename, $delimiter, $enclosure)->write($phrase);
+            if ($phrase instanceof Phrase) {
+                $this->getDictionaryWriter($outputFilename, $delimiter, $enclosure)->write($phrase);
+            }
         }
         $this->writer = null;
     }
