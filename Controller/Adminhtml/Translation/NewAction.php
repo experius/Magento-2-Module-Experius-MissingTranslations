@@ -13,7 +13,8 @@ namespace Experius\MissingTranslations\Controller\Adminhtml\Translation;
 
 class NewAction extends \Experius\MissingTranslations\Controller\Adminhtml\Translation
 {
-
+    const ADMIN_RESOURCE = 'Experius_MissingTranslations::Translation_save';
+    
     protected $resultPageFactory;
 
     /**
