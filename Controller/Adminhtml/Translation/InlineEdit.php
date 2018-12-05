@@ -27,6 +27,8 @@ namespace Experius\MissingTranslations\Controller\Adminhtml\Translation;
  */
 class InlineEdit extends \Magento\Backend\App\Action
 {
+    const ADMIN_RESOURCE = 'Experius_MissingTranslations::Translation_update';
+    
     /**
      * @var \Magento\Framework\Controller\Result\JsonFactory
      */

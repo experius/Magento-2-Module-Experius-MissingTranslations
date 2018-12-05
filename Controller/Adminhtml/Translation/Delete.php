@@ -13,6 +13,7 @@ namespace Experius\MissingTranslations\Controller\Adminhtml\Translation;
 
 class Delete extends \Experius\MissingTranslations\Controller\Adminhtml\Translation
 {
+    const ADMIN_RESOURCE = 'Experius_MissingTranslations::Translation_delete';
 
     /**
      * Delete action

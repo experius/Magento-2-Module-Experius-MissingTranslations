@@ -13,8 +13,8 @@ namespace Experius\MissingTranslations\Controller\Adminhtml;
 
 abstract class Translation extends \Magento\Backend\App\Action
 {
+    const ADMIN_RESOURCE = 'Experius_MissingTranslations::Translation';
 
-    const ADMIN_RESOURCE = 'Experius_MissingTranslations::top_level';
     protected $_coreRegistry;
 
     /**

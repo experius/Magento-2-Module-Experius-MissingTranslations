@@ -13,7 +13,8 @@ namespace Experius\MissingTranslations\Controller\Adminhtml\Translation;
 
 class Index extends \Magento\Backend\App\Action
 {
-
+    const ADMIN_RESOURCE = 'Experius_MissingTranslations::Translation_view';
+    
     protected $resultPageFactory;
 
     /**

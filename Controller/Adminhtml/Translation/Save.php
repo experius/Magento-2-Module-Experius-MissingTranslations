@@ -29,6 +29,8 @@ use Magento\Framework\Exception\LocalizedException;
  */
 class Save extends \Magento\Backend\App\Action
 {
+    const ADMIN_RESOURCE = 'Experius_MissingTranslations::Translation_save';
+    
     /**
      * @var \Magento\Framework\App\Request\DataPersistorInterface
      */
