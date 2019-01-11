@@ -12,6 +12,7 @@ namespace Experius\MissingTranslations\Module\I18n\Parser\Adapter;
 
 use Experius\MissingTranslations\Module\I18n\Dictionary\Phrase;
 use Experius\MissingTranslations\Module\I18n\Parser\AdapterInterface;
+use Magento\Framework\App\ObjectManager;
 
 /**
  * Abstract parser adapter
@@ -33,40 +34,39 @@ abstract class AbstractAdapter implements AdapterInterface
     protected $_phrases = [];
 
     /**
+     * @var \Experius\MissingTranslations\Helper\Data
+     */
+    private $helper;
+
+    /**
      * {@inheritdoc}
      */
     public function parse($file)
     {
         $this->_phrases = [];
         $this->_file = $file;
-        if (strpos(strtolower($this->_file), 'adminhtml') === false && // exclude all adminhtml files
-            strpos(strtolower($this->_file), 'import-export/') === false &&
-            strpos(strtolower($this->_file), '/magento/module-backend/') === false &&
-            strpos(strtolower($this->_file), '/magento/module-admin-gws/') === false &&
-            strpos(strtolower($this->_file), '/magento/module-admin-notification/') === false &&
-            strpos(strtolower($this->_file), '/magento/module-translation/') === false &&
-            strpos(strtolower($this->_file), '/magento/module-support/') === false &&
-            strpos(strtolower($this->_file), '/magento/module-versions-cms/') === false &&
-            strpos(strtolower($this->_file), '/magento/module-visual-merchandiser/') === false &&
-            strpos(strtolower($this->_file), '/magento/module-webapi/') === false &&
-            strpos(strtolower($this->_file), '/magento/module-webapi-') === false &&
-            strpos(strtolower($this->_file), '/magento/module-developer/') === false &&
-            strpos(strtolower($this->_file), '/magento/module-cron/') === false &&
-            strpos(strtolower($this->_file), '/magento/module-catalog-url-rewrite/') === false &&
-            strpos(strtolower($this->_file), '/magento/module-catalog-url-rewrite-staging/') === false &&
-            strpos(strtolower($this->_file), '/magento/module-cache-invalidate/') === false &&
-            strpos(strtolower($this->_file), '/magento/module-encryption-key/') === false &&
-            strpos(strtolower($this->_file), '/magento/module-indexer/') === false &&
-            strpos(strtolower($this->_file), '/magento/module-message-queue/') === false &&
-            strpos(strtolower($this->_file), '/magento/module-new-relic-reporting/') === false &&
-            strpos(strtolower($this->_file), '/magento/module-resource-connections/') === false &&
-            strpos(strtolower($this->_file), '/magento/module-security/') === false &&
-            strpos(strtolower($this->_file), '/magento/module-logging/') === false &&
-            strpos($this->_file, '/Test/Unit/') === false &&
-            strpos($this->_file, '/magento/magento2-base/dev/') === false
-        ) {
+        $parse = true;
+        foreach ($this->getHelper()->getFilters() as $filter) {
+            if (strpos(strtolower($this->_file), strtolower($filter)) !== false) {
+                $parse = false;
+                break;
+            }
+        }
+        if ($parse) {
             $this->_parse();
         }
+    }
+
+    /**
+     * @return \Experius\MissingTranslations\Helper\Data|mixed
+     */
+    public function getHelper()
+    {
+        if (!$this->helper) {
+            $objectManager = ObjectManager::getInstance();
+            $this->helper = $objectManager->get(\Experius\MissingTranslations\Helper\Data::class);
+        }
+        return $this->helper;
     }
 
     /**

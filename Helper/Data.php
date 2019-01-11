@@ -60,6 +60,42 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     protected $themePackageList;
 
     /**
+     * @var array
+     */
+    protected $filters = [
+        'url-rewrite',
+        'admin',
+        'cron',
+        'import-export/',
+        '/magento/module-deploy/',
+        '/magento/module-backend/',
+        '/magento/module-translation/',
+        '/magento/module-support/',
+        '/magento/module-versions-cms/',
+        '/magento/module-visual-merchandiser/',
+        '/magento/module-webapi/',
+        '/magento/module-webapi-',
+        '/magento/module-developer/',
+        '/magento/module-cache-invalidate/',
+        '/magento/module-encryption-key/',
+        '/magento/module-indexer/',
+        '/magento/module-message-queue/',
+        '/magento/module-new-relic-reporting/',
+        '/magento/module-resource-connections/',
+        '/magento/module-security/',
+        '/magento/module-logging/',
+        '/test/unit/',
+        '/magento/magento2-base/dev/',
+        'etc/module.xml',
+        'etc/acl.xml',
+        'etc/widget.xml',
+        'etc/indexer.xml',
+        'import',
+        'export',
+        'experius/emailcatcher'
+    ];
+
+    /**
      * Data constructor.
      * @param \Magento\Framework\App\Helper\Context $context
      * @param \Magento\Framework\App\Filesystem\DirectoryList $directoryList
@@ -188,5 +224,15 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $filename = $directoryPath . $locale . '.csv';
 
         return (file_exists($filename) || $requiredExists == false) ? $filename : false;
+    }
+
+
+
+    /**
+     * @return array
+     */
+    public function getFilters()
+    {
+        return $this->filters;
     }
 }
