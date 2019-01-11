@@ -2,16 +2,18 @@ define(
     [
         'jquery',
         'mage/storage',
+        'mage/url',
     ],
-    function ($, storage) {
+    function ($, storage, urlBuilder) {
         'use strict';
 
 
         return function (deferred, localeCode) {
             var param = 'ajax=1';
+            var url = urlBuilder.build("/experius_missingtranslations/ajax/phrases/locale/"+localeCode);
             $.ajax({
                 showLoader: true,
-                url: "/storemanager/experius_missingtranslations/ajax/phrases/locale/"+localeCode,
+                url: url,
                 data: param,
                 type: "POST",
                 dataType: 'json'
