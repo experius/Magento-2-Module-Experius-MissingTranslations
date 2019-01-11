@@ -92,6 +92,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         'etc/indexer.xml',
         'import',
         'export',
+        'experius/emailcatcher'
     ];
 
     /**

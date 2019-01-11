@@ -47,7 +47,7 @@ abstract class AbstractAdapter implements AdapterInterface
         $this->_file = $file;
         $parse = true;
         foreach ($this->getHelper()->getFilters() as $filter) {
-            if (strpos(strtolower($this->_file), $filter) !== false) {
+            if (strpos(strtolower($this->_file), strtolower($filter)) !== false) {
                 $parse = false;
                 break;
             }
