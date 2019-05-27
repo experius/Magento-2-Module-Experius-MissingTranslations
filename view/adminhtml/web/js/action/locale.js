@@ -10,7 +10,13 @@ define(
 
         return function (deferred, localeCode) {
             var param = 'ajax=1';
-            var url = urlBuilder.build("/experius_missingtranslations/ajax/phrases/locale/"+localeCode);
+
+            var extendedUrl = window.location.href;
+            var urlString = extendedUrl.split("experius_missingtranslations")[0];
+            var adminArray = urlString.split("/");
+            var adminUrl = "/" + adminArray[adminArray.length-2];
+            var url = urlBuilder.build(adminUrl + "/experius_missingtranslations/ajax/phrases/locale/" + localeCode);
+
             $.ajax({
                 showLoader: true,
                 url: url,
