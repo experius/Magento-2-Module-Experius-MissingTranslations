@@ -149,10 +149,6 @@ abstract class AbstractParser implements I18n\ParserInterface
     public function loadTranslations($locale = 'en_US')
     {
         $objectManager = ObjectManager::getInstance();
-        $resolver = $objectManager->get('Magento\Framework\Locale\Resolver');
-
-        $translator = $objectManager->get('Magento\Framework\Phrase\Renderer\Translate');
-
         $translatorInterface = $objectManager->get('Magento\Framework\TranslateInterface');
         $translatorInterface->setLocale($locale);
         $translatorInterface->loadData('frontend', true);

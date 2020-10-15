@@ -29,7 +29,7 @@ class Store implements OptionSourceInterface
      */
     public function toOptionArray()
     {
-        $stores = $this->storeManager->getStores($withDefault = true);
+        $stores = $this->storeManager->getStores(true);
         if ($this->options === null) {
             $this->options = [];
             foreach ($stores as $store) {

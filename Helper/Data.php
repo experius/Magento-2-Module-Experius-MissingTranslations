@@ -21,8 +21,6 @@
 
 namespace Experius\MissingTranslations\Helper;
 
-use Magento\Framework\DataObject;
-
 /**
  * Class Data
  * @package Experius\MissingTranslations\Helper
@@ -133,7 +131,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $themes = $this->themePackageList->getThemes();
 
         $staticVersionUpdateRequired = false;
-        foreach ($themes as $relativePath => $theme) {
+        foreach (array_keys($themes) as $relativePath) {
             $jsonFilePath = $this->directoryList->getPath(\Magento\Framework\App\Filesystem\DirectoryList::STATIC_VIEW) .
                 \DIRECTORY_SEPARATOR .
                 $relativePath .
@@ -217,7 +215,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public function getFileName($locale = 'en_US', $requiredExists = true)
     {
         $vendor = $this->getLanguageVendor();
-        $directoryPath = $this->directoryList->getRoot() . '/app/i18n/'. $vendor . '/missing/';
+        $directoryPath = $this->directoryList->getRoot() . '/app/i18n/' . $vendor . '/missing/';
         if (!is_dir($directoryPath)) {
             mkdir($directoryPath, 0777, true);
         }
@@ -225,8 +223,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
         return (file_exists($filename) || $requiredExists == false) ? $filename : false;
     }
-
-
 
     /**
      * @return array

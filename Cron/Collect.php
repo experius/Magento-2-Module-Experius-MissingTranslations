@@ -68,7 +68,7 @@ class Collect
         $storeId = 0;
         $locales = $this->localeSourceModel->getLocaleMapping();
 
-        foreach ($locales as $locale => $localeOptionArray) {
+        foreach (array_keys($locales) as $locale) {
             $this->translationCollector->updateTranslationDatabase(
                 $storeId,
                 $locale,
@@ -91,7 +91,7 @@ class Collect
         $storeId = 0;
         $locales = $this->localeSourceModel->getLocaleMapping();
 
-        foreach ($locales as $locale => $localeOptionArray) {
+        foreach (array_keys($locales) as $locale) {
             $this->translationCollector->updateTranslationDatabase(
                 $storeId,
                 $locale,

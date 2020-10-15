@@ -99,7 +99,7 @@ class MissingTranslationsToDatabase extends Command
         $insertionCount = $this->translationCollector->updateTranslationDatabase(
             $storeId,
             $locale,
-            $translationType = \Experius\MissingTranslations\Model\TranslationCollector::TRANSLATION_TYPE_MISSING
+            \Experius\MissingTranslations\Model\TranslationCollector::TRANSLATION_TYPE_MISSING
         );
 
         if ($insertionCount > 0) {
