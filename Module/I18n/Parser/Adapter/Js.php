@@ -20,7 +20,7 @@ class Js extends AbstractAdapter
      */
     protected function _parse()
     {
-        $fileHandle = @fopen($this->_file, 'r');
+        $fileHandle = file_exists($this->_file) ? fopen($this->_file, 'r') : false;
         $lineNumber = 0;
         if ($fileHandle) {
             while (!feof($fileHandle)) {

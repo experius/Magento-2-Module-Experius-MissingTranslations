@@ -1,3 +1,10 @@
+## 2.1.13 (2020-10-15)
+
+[View Release](git@github.com:experius/Magento-2-Module-Experius-MissingTranslations.git/commits/tag/2.1.13)
+
+*  [REFACTOR] [BACI-123] solved errors based on php code sniffer *(Lewis Voncken)*
+
+
 ## 2.1.12 (2020-10-15)
 
 [View Release](git@github.com:experius/Magento-2-Module-Experius-MissingTranslations.git/commits/tag/2.1.12)
