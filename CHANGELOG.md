@@ -1,3 +1,10 @@
+## 3.0.1 (2020-10-21)
+
+[View Release](git@github.com:experius/Magento-2-Module-Experius-MissingTranslations.git/commits/tag/3.0.1)
+
+*  [REFACTOR] [BACI-157] Removed setup_version from module.xml *(Lewis Voncken)*
+
+
 ## 3.0.0 (2020-10-21)
 
 [View Release](git@github.com:experius/Magento-2-Module-Experius-MissingTranslations.git/commits/tag/3.0.0)
