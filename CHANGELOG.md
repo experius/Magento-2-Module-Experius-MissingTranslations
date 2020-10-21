@@ -1,3 +1,10 @@
+## 3.0.0 (2020-10-21)
+
+[View Release](git@github.com:experius/Magento-2-Module-Experius-MissingTranslations.git/commits/tag/3.0.0)
+
+*  [FEATURE] [BACI-157] Converted Schema Setup Scripts to db_schema.xml *(Lewis Voncken)*
+
+
 ## 2.1.13 (2020-10-15)
 
 [View Release](git@github.com:experius/Magento-2-Module-Experius-MissingTranslations.git/commits/tag/2.1.13)
