@@ -1,3 +1,10 @@
+## 3.1.0 (2020-10-22)
+
+[View Release](git@github.com:experius/Magento-2-Module-Experius-MissingTranslations.git/commits/tag/3.1.0)
+
+*  [FEATURE] [BACI-154] Added strict_types=1 and added License *(Lewis Voncken)*
+
+
 ## 3.0.1 (2020-10-21)
 
 [View Release](git@github.com:experius/Magento-2-Module-Experius-MissingTranslations.git/commits/tag/3.0.1)

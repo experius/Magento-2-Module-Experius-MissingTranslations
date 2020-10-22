@@ -1,8 +1,10 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © Experius B.V. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
+
 namespace Experius\MissingTranslations\Ui\Component\Listing\Column;
 
 use Magento\Framework\Data\OptionSourceInterface;
