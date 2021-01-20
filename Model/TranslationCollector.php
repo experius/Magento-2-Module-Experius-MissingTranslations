@@ -123,6 +123,8 @@ class TranslationCollector
              * Due to Magento table limitation strings longer than 255 characters
              * are being cut off, so these are excluded for now
              */
+            $originalString = strval($originalString);
+
             if (strlen($originalString) > 255 || strlen($translate) > 255) {
                 continue;
             }
