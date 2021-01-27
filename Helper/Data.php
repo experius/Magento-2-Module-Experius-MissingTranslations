@@ -203,8 +203,16 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $vendor = $this->getLanguageVendor();
         $directoryPath = $this->directoryList->getRoot() . '/app/i18n/' . $vendor . '/missing/';
         if (!is_dir($directoryPath)) {
-            mkdir($directoryPath, 0777, true);
+            @mkdir($directoryPath, 0777, true);
         }
+        // Fallback for e.g., Magento Cloud, where /app directory has no write access
+        if (!is_dir($directoryPath)) {
+            $directoryPath = $this->directoryList->getRoot() . '/var/i18n/' . $vendor . '/missing/';
+            if (!is_dir($directoryPath)) {
+                @mkdir($directoryPath, 0777, true);
+            }
+        }
+
         $filename = $directoryPath . $locale . '.csv';
 
         return (file_exists($filename) || $requiredExists == false) ? $filename : false;
