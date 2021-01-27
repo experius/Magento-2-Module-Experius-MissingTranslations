@@ -30,7 +30,7 @@ class Csv implements WriterInterface
      */
     public function __construct($outputFilename)
     {
-        if (!file_exists($outputFilename) || false === ($fileHandler = fopen($outputFilename, 'w'))) {
+        if (false === ($fileHandler = fopen($outputFilename, 'w')) || !file_exists($outputFilename)) {
             throw new \InvalidArgumentException(
                 sprintf('Cannot open file for write dictionary: "%s"', $outputFilename)
             );
