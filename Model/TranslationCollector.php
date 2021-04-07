@@ -119,14 +119,10 @@ class TranslationCollector
     {
         $insertionCount = 0;
         foreach ($translations as $originalString => $translate) {
-            /**
-             * Due to Magento table limitation strings longer than 255 characters
-             * are being cut off, so these are excluded for now
-             */
-            if (strlen($originalString) > 255 || strlen($translate) > 255) {
-                continue;
-            }
 
+            $originalString = (string)$originalString;
+            $translate = (string)$translate;
+            
             /** Filter empty value's */
             if (empty($originalString)) {
                 continue;
@@ -137,6 +133,14 @@ class TranslationCollector
                 $translate = $originalString;
             }
 
+            /**
+             * Due to Magento table limitation strings longer than 255 characters
+             * are being cut off, so these are excluded for now
+             */
+            if (strlen($originalString) > 255 || strlen($translate) > 255) {
+                continue;
+            }
+            
             $different = ($translate == $originalString) ? 0 : 1;
 
             $data = [
