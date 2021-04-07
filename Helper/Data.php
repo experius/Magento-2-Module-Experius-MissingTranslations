@@ -66,7 +66,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         '/magento/module-message-queue/',
         '/magento/module-new-relic-reporting/',
         '/magento/module-resource-connections/',
-        '/magento/module-security/',
         '/magento/module-logging/',
         '/test/unit/',
         '/magento/magento2-base/dev/',
