@@ -102,49 +102,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
-     * Update js-translation.json files in static content for specific locale
-     */
-    public function updateJsTranslationJsonFiles($locale = null)
-    {
-        if (!$locale) {
-            return;
-        }
-
-        $translations = $this->translateResource->getTranslationArray(null, $locale);
-        $translationsJson = json_encode($translations);
-
-        $themes = $this->themePackageList->getThemes();
-
-        $staticVersionUpdateRequired = false;
-        foreach (array_keys($themes) as $relativePath) {
-            $jsonFilePath = $this->directoryList->getPath(\Magento\Framework\App\Filesystem\DirectoryList::STATIC_VIEW) .
-                \DIRECTORY_SEPARATOR .
-                $relativePath .
-                \DIRECTORY_SEPARATOR .
-                $locale .
-                \DIRECTORY_SEPARATOR .
-                \Magento\Translation\Model\Js\Config::DICTIONARY_FILE_NAME;
-            if ($this->driverFile->isExists($jsonFilePath)) {
-                $this->driverFile->filePutContents($jsonFilePath, $translationsJson);
-                $staticVersionUpdateRequired = true;
-            }
-        }
-
-        if ($staticVersionUpdateRequired) {
-            $this->updateStaticVersionNumber();
-        }
-    }
-
-    /**
-     * Updated static content version number
-     */
-    public function updateStaticVersionNumber()
-    {
-        $version = (new \DateTime())->getTimestamp();
-        $this->versionStorage->save($version);
-    }
-
-    /**
      * Get language vendor from configuration for current store
      *
      * @return string

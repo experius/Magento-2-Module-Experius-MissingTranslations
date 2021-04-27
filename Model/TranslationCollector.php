@@ -73,8 +73,6 @@ class TranslationCollector
         $translations = array_diff_key($translations, $databaseTranslations);
 
         $insertionCount = $this->createNewTranslations($translations, $storeId, $locale);
-        
-        $this->helper->updateJsTranslationJsonFiles($locale);
 
         $this->emulation->stopEnvironmentEmulation();
         return $insertionCount;
