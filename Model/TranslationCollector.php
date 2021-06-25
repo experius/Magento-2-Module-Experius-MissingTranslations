@@ -123,7 +123,7 @@ class TranslationCollector
              * Due to Magento table limitation strings longer than 255 characters
              * are being cut off, so these are excluded for now
              */
-            if (strlen($originalString) > 255 || strlen($translate) > 255) {
+            if (strlen(strval($originalString)) > 255 || strlen($translate) > 255) {
                 continue;
             }
 
@@ -144,7 +144,7 @@ class TranslationCollector
                 'store_id' => $storeId,
                 'locale' => $locale,
                 'string' => $originalString,
-                'crc_string' => crc32($originalString),
+                'crc_string' => crc32(strval($originalString)),
                 'different' => $different
             ];
             $translation = $this->translationFactory->create();
