@@ -120,6 +120,12 @@ class TranslationCollector
         $insertionCount = 0;
         foreach ($translations as $originalString => $translate) {
             /**
+             * Explicitly cast to string since community engineering translations can contain phrases
+             * that Magento parsing returns as integer
+             */
+            $originalString = (string) $originalString;
+            $translate = (string) $translate;
+            /**
              * Due to Magento table limitation strings longer than 255 characters
              * are being cut off, so these are excluded for now
              */
