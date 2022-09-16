@@ -12,10 +12,10 @@ use Magento\Backend\Block\Widget\Context;
 abstract class GenericButton
 {
 
-    protected $context;
+    protected Context $context;
 
     /**
-     * @param \Magento\Backend\Block\Widget\Context $context
+     * @param Context $context
      */
     public function __construct(Context $context)
     {
@@ -27,9 +27,9 @@ abstract class GenericButton
      *
      * @return int|null
      */
-    public function getModelId()
+    public function getModelId(): ?int
     {
-        return $this->context->getRequest()->getParam('key_id');
+        return (int)$this->context->getRequest()->getParam('key_id');
     }
 
     /**
@@ -39,7 +39,7 @@ abstract class GenericButton
      * @param   array $params
      * @return  string
      */
-    public function getUrl($route = '', $params = [])
+    public function getUrl(string $route = '', array $params = []): string
     {
         return $this->context->getUrlBuilder()->getUrl($route, $params);
     }

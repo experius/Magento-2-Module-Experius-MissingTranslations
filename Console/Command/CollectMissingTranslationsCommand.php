@@ -7,6 +7,9 @@ declare(strict_types=1);
 
 namespace Experius\MissingTranslations\Console\Command;
 
+use Experius\MissingTranslations\Helper\Data;
+use Magento\Framework\App\State;
+use Magento\Store\Model\App\Emulation;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -29,30 +32,30 @@ class CollectMissingTranslationsCommand extends Command
     const SHORTCUT_KEY_STORE = 's';
 
     /**
-     * @var Magento\Store\Model\App\Emulation
+     * @var Emulation
      */
-    protected $emulation;
+    protected Emulation $emulation;
 
     /**
-     * @var Magento\Framework\App\State
+     * @var State
      */
-    protected $state;
+    protected State $state;
 
     /**
-     * @var Experius\MissingTranslations\Helper\Data
+     * @var Data
      */
-    protected $helper;
+    protected Data $helper;
 
     /**
      * CollectMissingTranslationsCommand constructor.
-     * @param \Magento\Store\Model\App\Emulation $emulation
-     * @param \Magento\Framework\App\State $state
-     * @param \Experius\MissingTranslations\Helper\Data $helper
+     * @param Emulation $emulation
+     * @param State $state
+     * @param Data $helper
      */
     public function __construct(
-        \Magento\Store\Model\App\Emulation $emulation,
-        \Magento\Framework\App\State $state,
-        \Experius\MissingTranslations\Helper\Data $helper
+        Emulation $emulation,
+        State $state,
+        Data $helper
     ) {
         $this->emulation = $emulation;
         $this->state = $state;

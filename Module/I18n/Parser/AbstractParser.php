@@ -157,7 +157,7 @@ abstract class AbstractParser implements I18n\ParserInterface
      *
      * @return array
      */
-    public function getTranslations()
+    public function getTranslations(): array
     {
         return $this->_translations;
     }

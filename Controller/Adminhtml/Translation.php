@@ -7,19 +7,26 @@ declare(strict_types=1);
 
 namespace Experius\MissingTranslations\Controller\Adminhtml;
 
+use Magento\Backend\App\Action\Context;
+use Magento\Backend\Model\View\Result\Page;
+use Magento\Framework\Registry;
+
 abstract class Translation extends \Magento\Backend\App\Action
 {
     const ADMIN_RESOURCE = 'Experius_MissingTranslations::Translation';
 
-    protected $_coreRegistry;
+    /**
+     * @var Registry
+     */
+    protected Registry $_coreRegistry;
 
     /**
-     * @param \Magento\Backend\App\Action\Context $context
-     * @param \Magento\Framework\Registry $coreRegistry
+     * @param Context $context
+     * @param Registry $coreRegistry
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\Registry $coreRegistry
+        Context $context,
+        Registry $coreRegistry
     ) {
         $this->_coreRegistry = $coreRegistry;
         parent::__construct($context);
@@ -28,9 +35,10 @@ abstract class Translation extends \Magento\Backend\App\Action
     /**
      * Init page
      *
-     * @param \Magento\Backend\Model\View\Result\Page $resultPage
+     * @param Page $resultPage
+     * @return Page
      */
-    public function initPage($resultPage)
+    public function initPage(Page $resultPage): Page
     {
         $resultPage->setActiveMenu('Experius::experius_translation')
             ->addBreadcrumb(__('Experius'), __('Experius'))

@@ -8,16 +8,26 @@ declare(strict_types=1);
 namespace Experius\MissingTranslations\Model\Translation;
 
 use Experius\MissingTranslations\Model\ResourceModel\Translation\CollectionFactory;
+use Experius\MissingTranslations\Model\Translation;
 use Magento\Framework\App\Request\DataPersistorInterface;
+use Magento\Ui\DataProvider\AbstractDataProvider;
 
-class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
+class DataProvider extends AbstractDataProvider
 {
+    /**
+     * @var CollectionFactory
+     */
+    protected CollectionFactory $collectionFactory;
 
-    protected $collection;
+    /**
+     * @var DataPersistorInterface
+     */
+    protected DataPersistorInterface $dataPersistor;
 
-    protected $dataPersistor;
-
-    protected $loadedData;
+    /**
+     * @var array
+     */
+    protected array $loadedData;
 
     /**
      * Constructor
@@ -25,21 +35,21 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
      * @param string $name
      * @param string $primaryFieldName
      * @param string $requestFieldName
-     * @param CollectionFactory $blockCollectionFactory
+     * @param CollectionFactory $collectionFactory
      * @param DataPersistorInterface $dataPersistor
      * @param array $meta
      * @param array $data
      */
     public function __construct(
-        $name,
-        $primaryFieldName,
-        $requestFieldName,
+        string $name,
+        string $primaryFieldName,
+        string $requestFieldName,
         CollectionFactory $collectionFactory,
         DataPersistorInterface $dataPersistor,
         array $meta = [],
         array $data = []
     ) {
-        $this->collection = $collectionFactory->create();
+        $this->collectionFactory = $collectionFactory;
         $this->dataPersistor = $dataPersistor;
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
     }
@@ -49,24 +59,25 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
      *
      * @return array
      */
-    public function getData()
+    public function getData(): array
     {
         if (isset($this->loadedData)) {
             return $this->loadedData;
         }
-        $items = $this->collection->getItems();
-        foreach ($items as $model) {
+        $collection = $this->collectionFactory->create();
+        foreach ($collection->getItems() as $model) {
+            /** @var $model Translation */
             $this->loadedData[$model->getId()] = $model->getData();
         }
         $data = $this->dataPersistor->get('experius_missingtranslations_translation');
-        
+
         if (!empty($data)) {
-            $model = $this->collection->getNewEmptyItem();
+            $model = $collection->getNewEmptyItem();
             $model->setData($data);
             $this->loadedData[$model->getId()] = $model->getData();
             $this->dataPersistor->clear('experius_missingtranslations_translation');
         }
-        
+
         return $this->loadedData;
     }
 }

@@ -7,20 +7,49 @@ declare(strict_types=1);
 
 namespace Experius\MissingTranslations\Controller\Adminhtml\Ajax;
 
-class Phrases extends \Magento\Framework\App\Action\Action
+use Experius\MissingTranslations\Helper\Data;
+use Magento\Backend\App\Action;
+use Magento\Backend\Model\UrlInterface;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Serialize\Serializer\Json;
+use Magento\Framework\View\Result\PageFactory;
+
+class Phrases extends Action
 {
+    /**
+     * @var PageFactory
+     */
+    protected PageFactory $resultPageFactory;
 
-    protected $resultPageFactory;
-    protected $jsonHelper;
-    protected $urlBuilder;
-    protected $helper;
+    /**
+     * @var Json
+     */
+    protected Json $jsonHelper;
 
+    /**
+     * @var UrlInterface
+     */
+    protected UrlInterface $urlBuilder;
+
+    /**
+     * @var Data
+     */
+    protected Data $helper;
+
+    /**
+     * @param Context $context
+     * @param PageFactory $resultPageFactory
+     * @param Json $jsonHelper
+     * @param Data $helper
+     * @param UrlInterface $urlBuilder
+     */
     public function __construct(
-        \Magento\Framework\App\Action\Context $context,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory,
-        \Magento\Framework\Json\Helper\Data $jsonHelper,
-        \Experius\MissingTranslations\Helper\Data $helper,
-        \Magento\Backend\Model\UrlInterface $urlBuilder
+        Context $context,
+        PageFactory $resultPageFactory,
+        Json $jsonHelper,
+        Data $helper,
+        UrlInterface $urlBuilder
     ) {
         $this->resultPageFactory = $resultPageFactory;
         $this->jsonHelper = $jsonHelper;
@@ -30,7 +59,7 @@ class Phrases extends \Magento\Framework\App\Action\Action
     }
 
 
-    public function execute()
+    public function execute(): ResponseInterface
     {
         try {
             $phrases = $this->helper->getPhrases($this->getRequest()->getParam('locale'));
@@ -43,18 +72,17 @@ class Phrases extends \Magento\Framework\App\Action\Action
             }
 
             return $this->jsonResponse($phrases);
-        } catch (\Magento\Framework\Exception\LocalizedException $e) {
-            return $this->jsonResponse($e->getMessage());
         } catch (\Exception $e) {
-            return $this->jsonResponse($e->getMessage());
+            $this->messageManager->addErrorMessage(__("Failed to get Phrases : %1", [$e->getMessage()]));
+            return $this->jsonResponse([]);
         }
     }
 
 
-    public function jsonResponse($response = '')
+    public function jsonResponse(array $response = []): ResponseInterface
     {
         return $this->getResponse()->representJson(
-            $this->jsonHelper->jsonEncode($response)
+            $this->jsonHelper->serialize($response)
         );
     }
 }

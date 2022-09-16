@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace Experius\MissingTranslations\Console\Command;
 
+use Experius\MissingTranslations\Model\TranslationCollector;
+use Magento\Framework\App\State;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -27,24 +29,24 @@ class ExistingTranslationsToDatabase extends Command
     const SHORTCUT_KEY_GLOBAL = 'g';
 
     /**
-     * @var Magento\Framework\App\State
+     * @var State
      */
-    protected $state;
+    protected State $state;
 
     /**
-     * @var \Experius\MissingTranslations\Model\TranslationCollector
+     * @var TranslationCollector
      */
-    protected $translationCollector;
+    protected TranslationCollector $translationCollector;
 
     /**
      * AddTranslationsToDatabaseCommand constructor.
      *
-     * @param \Magento\Framework\App\State $state
-     * @param \Experius\MissingTranslations\Model\TranslationCollector $translationCollector
+     * @param State $state
+     * @param TranslationCollector $translationCollector
      */
     public function __construct(
-        \Magento\Framework\App\State $state,
-        \Experius\MissingTranslations\Model\TranslationCollector $translationCollector
+        State $state,
+        TranslationCollector $translationCollector
     ) {
         $this->state = $state;
         $this->translationCollector = $translationCollector;
@@ -85,7 +87,7 @@ class ExistingTranslationsToDatabase extends Command
         $insertionCount = $this->translationCollector->updateTranslationDatabase(
             $storeId,
             $locale,
-            \Experius\MissingTranslations\Model\TranslationCollector::TRANSLATION_TYPE_EXISTING
+            TranslationCollector::TRANSLATION_TYPE_EXISTING
         );
 
         if ($insertionCount > 0) {

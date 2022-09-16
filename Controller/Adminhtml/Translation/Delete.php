@@ -7,40 +7,62 @@ declare(strict_types=1);
 
 namespace Experius\MissingTranslations\Controller\Adminhtml\Translation;
 
+use Experius\MissingTranslations\Model\TranslationRepository;
+use Magento\Backend\App\Action\Context;
+use Magento\Backend\Model\View\Result\Redirect;
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Exception\CouldNotDeleteException;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Registry;
+
 class Delete extends \Experius\MissingTranslations\Controller\Adminhtml\Translation
 {
     const ADMIN_RESOURCE = 'Experius_MissingTranslations::Translation_delete';
 
     /**
+     * @var TranslationRepository
+     */
+    protected TranslationRepository $translationRepository;
+
+    /**
+     * @param Context $context
+     * @param Registry $coreRegistry
+     * @param TranslationRepository $translationRepository
+     */
+    public function __construct(
+        Context $context,
+        Registry $coreRegistry,
+        TranslationRepository $translationRepository
+    ) {
+        parent::__construct($context, $coreRegistry);
+        $this->translationRepository = $translationRepository;
+    }
+
+    /**
      * Delete action
      *
-     * @return \Magento\Framework\Controller\ResultInterface
+     * @return ResultInterface
      */
-    public function execute()
+    public function execute(): ResultInterface
     {
-        /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
+        /** @var Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
         // check if we know what should be deleted
         $id = $this->getRequest()->getParam('key_id');
         if ($id) {
             try {
-                // init model and delete
-                $model = $this->_objectManager->create('Experius\MissingTranslations\Model\Translation');
-                $model->load($id);
-                $model->delete();
-                // display success message
-                $this->messageManager->addSuccess(__('You deleted the Translation.'));
-                // go to grid
+                $this->translationRepository->deleteById((int)$id);
+                $this->messageManager->addSuccessMessage(__('You deleted the Translation.'));
                 return $resultRedirect->setPath('*/*/');
-            } catch (\Exception $e) {
+            } catch (CouldNotDeleteException|NoSuchEntityException $e) {
                 // display error message
-                $this->messageManager->addError($e->getMessage());
+                $this->messageManager->addErrorMessage($e->getMessage());
                 // go back to edit form
                 return $resultRedirect->setPath('*/*/edit', ['key_id' => $id]);
             }
         }
         // display error message
-        $this->messageManager->addError(__('We can\'t find a Translation to delete.'));
+        $this->messageManager->addErrorMessage(__('We can\'t find a Translation to delete.'));
         // go to grid
         return $resultRedirect->setPath('*/*/');
     }

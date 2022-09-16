@@ -8,52 +8,52 @@ declare(strict_types=1);
 namespace Experius\MissingTranslations\Model;
 
 use Experius\MissingTranslations\Api\Data\TranslationInterface;
+use Magento\Framework\Model\AbstractModel;
 
-class Translation extends \Magento\Framework\Model\AbstractModel implements TranslationInterface
+class Translation extends AbstractModel implements TranslationInterface
 {
-
     /**
      * @return void
      */
-    protected function _construct()
+    protected function _construct(): void
     {
         $this->_init('Experius\MissingTranslations\Model\ResourceModel\Translation');
     }
 
     /**
      * Get translation_id
-     * @return string
+     * @return int
      */
-    public function getTranslationId()
+    public function getTranslationId(): int
     {
         return $this->getData(self::TRANSLATION_ID);
     }
 
     /**
      * Set translation_id
-     * @param string $translationId
-     * @return Experius\MissingTranslations\Api\Data\TranslationInterface
+     * @param int $translationId
+     * @return TranslationInterface
      */
-    public function setTranslationId($translationId)
+    public function setTranslationId(int $translationId): TranslationInterface
     {
         return $this->setData(self::TRANSLATION_ID, $translationId);
     }
 
     /**
      * Get key_id
-     * @return string
+     * @return int
      */
-    public function getKeyId()
+    public function getKeyId(): int
     {
         return $this->getData(self::KEY_ID);
     }
 
     /**
      * Set key_id
-     * @param string $key_id
-     * @return Experius\MissingTranslations\Api\Data\TranslationInterface
+     * @param int $key_id
+     * @return TranslationInterface
      */
-    public function setKeyId($key_id)
+    public function setKeyId(int $key_id): TranslationInterface
     {
         return $this->setData(self::KEY_ID, $key_id);
     }

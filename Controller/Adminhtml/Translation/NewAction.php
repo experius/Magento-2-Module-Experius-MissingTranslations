@@ -7,51 +7,80 @@ declare(strict_types=1);
 
 namespace Experius\MissingTranslations\Controller\Adminhtml\Translation;
 
-class NewAction extends \Experius\MissingTranslations\Controller\Adminhtml\Translation
+use Experius\MissingTranslations\Controller\Adminhtml\Translation;
+use Experius\MissingTranslations\Model\TranslationFactory;
+use Experius\MissingTranslations\Model\TranslationRepository;
+use Magento\Backend\App\Action\Context;
+use Magento\Backend\Model\View\Result\Page;
+use Magento\Backend\Model\View\Result\Redirect;
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Registry;
+use Magento\Framework\View\Result\PageFactory;
+
+class NewAction extends Translation
 {
     const ADMIN_RESOURCE = 'Experius_MissingTranslations::Translation_save';
-    
-    protected $resultPageFactory;
 
     /**
-     * @param \Magento\Backend\App\Action\Context $context
-     * @param \Magento\Framework\Registry $coreRegistry
-     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
+     * @var PageFactory
+     */
+    protected PageFactory $resultPageFactory;
+
+    /**
+     * @var TranslationRepository
+     */
+    protected TranslationRepository $translationRepository;
+
+    /**
+     * @var TranslationFactory
+     */
+    protected TranslationFactory $translationFactory;
+
+    /**
+     * @param Context $context
+     * @param Registry $coreRegistry
+     * @param PageFactory $resultPageFactory
+     * @param TranslationRepository $translationRepository
+     * @param TranslationFactory $translationFactory
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\Registry $coreRegistry,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory
+        Context $context,
+        Registry $coreRegistry,
+        PageFactory $resultPageFactory,
+        TranslationRepository $translationRepository,
+        TranslationFactory $translationFactory
     ) {
-        $this->resultPageFactory = $resultPageFactory;
         parent::__construct($context, $coreRegistry);
+        $this->resultPageFactory = $resultPageFactory;
+        $this->translationRepository = $translationRepository;
+        $this->translationFactory =$translationFactory;
     }
 
     /**
      * Edit action
      *
-     * @return \Magento\Framework\Controller\ResultInterface
+     * @return ResultInterface
      */
-    public function execute()
+    public function execute(): ResultInterface
     {
-        // 1. Get ID and create model
         $id = $this->getRequest()->getParam('key_id');
-        $model = $this->_objectManager->create('Experius\MissingTranslations\Model\Translation');
-        
-        // 2. Initial checking
+
         if ($id) {
-            $model->load($id);
-            if (!$model->getId()) {
-                $this->messageManager->addError(__('This Translation no longer exists.'));
-                /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
+            try {
+                $model = $this->translationRepository->getById((int) $id);
+            } catch (NoSuchEntityException $e) {
+                $this->messageManager->addErrorMessage(__('This Translation no longer exists.'));
+                /** @var Redirect $resultRedirect */
                 $resultRedirect = $this->resultRedirectFactory->create();
                 return $resultRedirect->setPath('*/*/');
             }
+        } else {
+            $model = $this->translationFactory->create();
         }
         $this->_coreRegistry->register('experius_missingtranslations_translation', $model);
-        
-        // 5. Build edit form
-        /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
+
+        /** @var Page $resultPage */
         $resultPage = $this->resultPageFactory->create();
         $this->initPage($resultPage)->addBreadcrumb(
             __('Add Translation'),

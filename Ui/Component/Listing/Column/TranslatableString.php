@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace Experius\MissingTranslations\Ui\Component\Listing\Column;
 
+use Experius\MissingTranslations\Helper\Data;
 use Magento\Framework\Data\OptionSourceInterface;
 use Experius\MissingTranslations\Module\I18n\Parser\Contextual;
 
@@ -15,14 +16,26 @@ use Experius\MissingTranslations\Module\I18n\Parser\Contextual;
  */
 class TranslatableString implements OptionSourceInterface
 {
-    protected $options;
+    /**
+     * @var array
+     */
+    protected array $options = [];
 
-    protected $phrases = [];
+    /**
+     * @var array
+     */
+    protected array $phrases = [];
 
-    protected $helper;
+    /**
+     * @var Data
+     */
+    protected Data $helper;
 
+    /**
+     * @param Data $helper
+     */
     public function __construct(
-        \Experius\MissingTranslations\Helper\Data $helper
+        Data $helper
     ) {
         $this->helper = $helper;
         $this->phrases = $this->helper->getPhrases();
@@ -33,9 +46,9 @@ class TranslatableString implements OptionSourceInterface
      *
      * @return array
      */
-    public function toOptionArray()
+    public function toOptionArray(): array
     {
-        if ($this->options === null) {
+        if (empty($this->options)) {
             $this->options = [];
             foreach ($this->phrases as $line => $string) {
                 if (key_exists(1, $string) && $string[1] == '') {
