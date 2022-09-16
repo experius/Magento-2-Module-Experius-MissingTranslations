@@ -77,6 +77,9 @@ class CollectMissingTranslationsCommand extends Command
         } elseif (!$input->getArgument(self::INPUT_KEY_DIRECTORY)) {
             throw new \InvalidArgumentException('Directory path is needed when --magento flag is not set.');
         }
+        if (!$input->getOption(self::INPUT_KEY_LOCALE)) {
+            throw new \InvalidArgumentException('Locale is not set. Please use --locale to set locale');
+        }
         $generator = ServiceLocator::getDictionaryGenerator();
         $this->state->setAreaCode('frontend');
         $this->emulation->startEnvironmentEmulation($input->getOption(self::INPUT_KEY_STORE));

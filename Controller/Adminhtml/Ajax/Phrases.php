@@ -63,14 +63,6 @@ class Phrases extends Action
     {
         try {
             $phrases = $this->helper->getPhrases($this->getRequest()->getParam('locale'));
-
-            $options = [];
-            foreach ($phrases as $line => $string) {
-                if (key_exists(1, $string) && $string[1] == '') {
-                    $options[$line] = $string[0];
-                }
-            }
-
             return $this->jsonResponse($phrases);
         } catch (\Exception $e) {
             $this->messageManager->addErrorMessage(__("Failed to get Phrases : %1", [$e->getMessage()]));

@@ -125,8 +125,7 @@ class Save extends \Magento\Backend\App\Action
                     return $resultRedirect->setPath('*/*/');
                 }
             } else {
-                $this->helper->removeFromFile($data['string'], $data['locale']);
-                $this->translationFactory->create();
+                $model = $this->translationFactory->create();
             }
 
             $data['different'] = 1;
@@ -139,7 +138,10 @@ class Save extends \Magento\Backend\App\Action
             $model->setData($data);
 
             try {
-                $model->save();
+                $this->translationRepository->save($model);
+                if ($model->isObjectNew()) {
+                    $this->helper->removeFromFile($data['string'], $data['locale']);
+                }
                 $this->messageManager->addSuccessMessage(__('You saved the Translation.'));
                 $this->dataPersistor->clear('experius_missingtranslations_translation');
 

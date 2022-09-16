@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace Experius\MissingTranslations\Model\Translation;
 
+use Experius\MissingTranslations\Model\ResourceModel\Translation\Collection;
 use Experius\MissingTranslations\Model\ResourceModel\Translation\CollectionFactory;
 use Experius\MissingTranslations\Model\Translation;
 use Magento\Framework\App\Request\DataPersistorInterface;
@@ -15,9 +16,9 @@ use Magento\Ui\DataProvider\AbstractDataProvider;
 class DataProvider extends AbstractDataProvider
 {
     /**
-     * @var CollectionFactory
+     * @var Collection
      */
-    protected CollectionFactory $collectionFactory;
+    protected $collection;
 
     /**
      * @var DataPersistorInterface
@@ -27,7 +28,7 @@ class DataProvider extends AbstractDataProvider
     /**
      * @var array
      */
-    protected array $loadedData;
+    protected $loadedData = [];
 
     /**
      * Constructor
@@ -49,7 +50,7 @@ class DataProvider extends AbstractDataProvider
         array $meta = [],
         array $data = []
     ) {
-        $this->collectionFactory = $collectionFactory;
+        $this->collection = $collectionFactory->create();
         $this->dataPersistor = $dataPersistor;
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
     }
@@ -61,18 +62,17 @@ class DataProvider extends AbstractDataProvider
      */
     public function getData(): array
     {
-        if (isset($this->loadedData)) {
+        if (!empty($this->loadedData)) {
             return $this->loadedData;
         }
-        $collection = $this->collectionFactory->create();
-        foreach ($collection->getItems() as $model) {
+        foreach ($this->collection->getItems() as $model) {
             /** @var $model Translation */
             $this->loadedData[$model->getId()] = $model->getData();
         }
         $data = $this->dataPersistor->get('experius_missingtranslations_translation');
 
         if (!empty($data)) {
-            $model = $collection->getNewEmptyItem();
+            $model = $this->collection->getNewEmptyItem();
             $model->setData($data);
             $this->loadedData[$model->getId()] = $model->getData();
             $this->dataPersistor->clear('experius_missingtranslations_translation');
