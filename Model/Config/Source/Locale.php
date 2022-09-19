@@ -8,22 +8,26 @@ declare(strict_types=1);
 namespace Experius\MissingTranslations\Model\Config\Source;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Data\OptionSourceInterface;
+use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
 /**
  * Class Locale
  * @package Experius\MissingTranslations\Model\Config\Source
  */
-class Locale implements \Magento\Framework\Option\ArrayInterface
+class Locale implements OptionSourceInterface
 {
+    const CONFIG_PATH_SCOPE_CODE = 'general/locale/code';
+
     /**
      * @var StoreManagerInterface
      */
-    private $storeManager;
+    private StoreManagerInterface $storeManager;
     /**
      * @var ScopeConfigInterface
      */
-    private $scopeConfig;
+    private ScopeConfigInterface $scopeConfig;
 
     /**
      * Locale constructor.
@@ -34,7 +38,6 @@ class Locale implements \Magento\Framework\Option\ArrayInterface
         StoreManagerInterface $storeManager,
         ScopeConfigInterface $scopeConfig
     ) {
-    
         $this->storeManager = $storeManager;
         $this->scopeConfig = $scopeConfig;
     }
@@ -42,7 +45,7 @@ class Locale implements \Magento\Framework\Option\ArrayInterface
     /**
      * @return array
      */
-    public function toOptionArray()
+    public function toOptionArray(): array
     {
         return $this->getLocaleMapping();
     }
@@ -52,7 +55,7 @@ class Locale implements \Magento\Framework\Option\ArrayInterface
      *
      * @return array
      */
-    public function getLocaleMapping()
+    public function getLocaleMapping(): array
     {
         $stores = $this->storeManager->getStores();
 
@@ -60,8 +63,8 @@ class Locale implements \Magento\Framework\Option\ArrayInterface
 
         foreach ($stores as $store) {
             $locale = $this->scopeConfig->getValue(
-                'general/locale/code',
-                \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+                static::CONFIG_PATH_SCOPE_CODE,
+                ScopeInterface::SCOPE_STORE,
                 $store->getStoreId()
             );
             $mapping[$locale] = [

@@ -8,18 +8,28 @@ declare(strict_types=1);
 namespace Experius\MissingTranslations\Ui\Component\Listing\Column;
 
 use Magento\Framework\Data\OptionSourceInterface;
+use Magento\Store\Model\StoreManagerInterface;
 
 /**
  * Class TranslatableString
  */
 class Store implements OptionSourceInterface
 {
-    protected $options;
+    /**
+     * @var array
+     */
+    protected array $options;
 
-    protected $storeManager;
+    /**
+     * @var StoreManagerInterface
+     */
+    protected StoreManagerInterface $storeManager;
 
+    /**
+     * @param StoreManagerInterface $storeManager
+     */
     public function __construct(
-        \Magento\Store\Model\StoreManagerInterface $storeManager
+        StoreManagerInterface $storeManager
     ) {
         $this->storeManager = $storeManager;
     }
@@ -29,10 +39,10 @@ class Store implements OptionSourceInterface
      *
      * @return array
      */
-    public function toOptionArray()
+    public function toOptionArray(): array
     {
         $stores = $this->storeManager->getStores(true);
-        if ($this->options === null) {
+        if (empty($this->options)) {
             $this->options = [];
             foreach ($stores as $store) {
                 if ($store->getStoreId() == 0) {

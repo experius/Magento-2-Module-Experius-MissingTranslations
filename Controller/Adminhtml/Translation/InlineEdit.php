@@ -7,59 +7,70 @@ declare(strict_types=1);
 
 namespace Experius\MissingTranslations\Controller\Adminhtml\Translation;
 
+use Experius\MissingTranslations\Helper\Data;
+use Experius\MissingTranslations\Model\TranslationFactory;
+use Experius\MissingTranslations\Model\TranslationRepository;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\Controller\Result\Json;
+use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
+
 /**
  * Class InlineEdit
  * @package Experius\MissingTranslations\Controller\Adminhtml\Translation
  */
-class InlineEdit extends \Magento\Backend\App\Action
+class InlineEdit extends Action
 {
     const ADMIN_RESOURCE = 'Experius_MissingTranslations::Translation_update';
-    
-    /**
-     * @var \Magento\Framework\Controller\Result\JsonFactory
-     */
-    protected $jsonFactory;
 
     /**
-     * @var \Experius\MissingTranslations\Model\TranslationFactory
+     * @var JsonFactory
      */
-    protected $translationFactory;
+    protected JsonFactory $jsonFactory;
 
     /**
-     * @var \Experius\MissingTranslations\Helper\Data
+     * @var TranslationRepository
      */
-    protected $helper;
+    protected TranslationRepository $translationRepository;
+
+    /**
+     * @var Data
+     */
+    protected Data $helper;
+
     /**
      * InlineEdit constructor.
-     * @param \Magento\Backend\App\Action\Context $context
-     * @param \Magento\Framework\Controller\Result\JsonFactory $jsonFactory
-     * @param \Experius\MissingTranslations\Model\TranslationFactory $translationFactory
-     * @param \Experius\MissingTranslations\Helper\Data $helper
+     * @param Context $context
+     * @param JsonFactory $jsonFactory
+     * @param TranslationRepository $translationRepository
+     * @param Data $helper
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\Controller\Result\JsonFactory $jsonFactory,
-        \Experius\MissingTranslations\Model\TranslationFactory $translationFactory,
-        \Experius\MissingTranslations\Helper\Data $helper
+        Context $context,
+        JsonFactory $jsonFactory,
+        TranslationRepository $translationRepository,
+        Data $helper
     ) {
         parent::__construct($context);
         $this->jsonFactory = $jsonFactory;
-        $this->translationFactory = $translationFactory;
+        $this->translationRepository = $translationRepository;
         $this->helper = $helper;
     }
 
     /**
      * Inline edit action
      *
-     * @return \Magento\Framework\Controller\ResultInterface
+     * @return ResultInterface
      */
-    public function execute()
+    public function execute(): ResultInterface
     {
-        /** @var \Magento\Framework\Controller\Result\Json $resultJson */
         $resultJson = $this->jsonFactory->create();
         $error = false;
         $messages = [];
-        
+
         if ($this->getRequest()->getParam('isAjax')) {
             $postItems = $this->getRequest()->getParam('items', []);
             if (!count($postItems)) {
@@ -67,7 +78,14 @@ class InlineEdit extends \Magento\Backend\App\Action
                 $error = true;
             } else {
                 foreach (array_keys($postItems) as $modelId) {
-                    $model = $this->translationFactory->create()->load($modelId);
+                    try {
+                        $model = $this->translationRepository->getById((int) $modelId);
+                    } catch (NoSuchEntityException $e) {
+                        $messages[] = "[Translation ID: {$modelId}]  {$e->getMessage()}";
+                        $error = true;
+                        continue;
+                    }
+
                     $data = $model->getData();
                     $data['different'] = 1;
                     if (isset($data['string']) && isset($data['translate'])
@@ -78,17 +96,16 @@ class InlineEdit extends \Magento\Backend\App\Action
 
                     try {
                         $model->setData(array_merge($data, $postItems[$modelId]));
-                        $model->save();
+                        $this->translationRepository->save($model);
 
                         $this->helper->updateJsTranslationJsonFiles($data['locale']);
-                    } catch (\Exception $e) {
+                    } catch (LocalizedException $e) {
                         $messages[] = "[Translation ID: {$modelId}]  {$e->getMessage()}";
                         $error = true;
                     }
                 }
             }
         }
-        
         return $resultJson->setData([
             'messages' => $messages,
             'error' => $error

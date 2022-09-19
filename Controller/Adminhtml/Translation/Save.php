@@ -7,7 +7,18 @@ declare(strict_types=1);
 
 namespace Experius\MissingTranslations\Controller\Adminhtml\Translation;
 
+use Experius\MissingTranslations\Api\TranslationRepositoryInterface;
+use Experius\MissingTranslations\Helper\Data;
+use Experius\MissingTranslations\Model\TranslationFactory;
+use Magento\Backend\App\Action\Context;
+use Magento\Backend\Model\Auth\Session;
+use Magento\Backend\Model\View\Result\Redirect;
+use Magento\Framework\App\Request\DataPersistorInterface;
+use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Locale\ResolverInterface;
+use Magento\Translation\Model\Inline\CacheManager;
 
 /**
  * Class Save
@@ -16,57 +27,65 @@ use Magento\Framework\Exception\LocalizedException;
 class Save extends \Magento\Backend\App\Action
 {
     const ADMIN_RESOURCE = 'Experius_MissingTranslations::Translation_save';
-    
-    /**
-     * @var \Magento\Framework\App\Request\DataPersistorInterface
-     */
-    protected $dataPersistor;
 
     /**
-     * @var \Experius\MissingTranslations\Model\TranslationFactory
+     * @var DataPersistorInterface
      */
-    protected $translationFactory;
+    protected DataPersistorInterface $dataPersistor;
 
     /**
-     * @var \Experius\MissingTranslations\Helper\Data
+     * @var TranslationRepositoryInterface
      */
-    protected $helper;
+    protected TranslationRepositoryInterface $translationRepository;
 
     /**
-     * @var \Magento\Backend\Model\Auth\Session
+     * @var TranslationFactory
      */
-    protected $authSession;
+    protected TranslationFactory $translationFactory;
+
+    /**
+     * @var Data
+     */
+    protected Data $helper;
+
+    /**
+     * @var Session
+     */
+    protected Session $authSession;
     /**
      * @array
      */
-    protected $phrases;
+    protected array $phrases;
 
     /**
-     * @var \Magento\Translation\Model\Inline\CacheManager
+     * @var CacheManager
      */
-    protected $cacheManager;
+    protected CacheManager $cacheManager;
 
     /**
-     * @var \Magento\Framework\Locale\ResolverInterface
+     * @var ResolverInterface
      */
-    protected $localeResolver;
+    protected ResolverInterface $localeResolver;
 
     /**
      * Save constructor.
-     * @param \Magento\Backend\App\Action\Context $context
-     * @param \Magento\Framework\App\Request\DataPersistorInterface $dataPersistor
-     * @param \Experius\MissingTranslations\Model\TranslationFactory $translationFactory
-     * @param \Experius\MissingTranslations\Helper\Data $helper
-     * @param \Magento\Backend\Model\Auth\Session $authSession
+     * @param Context $context
+     * @param DataPersistorInterface $dataPersistor
+     * @param TranslationRepositoryInterface $translationRepository
+     * @param TranslationFactory $translationFactory
+     * @param Data $helper
+     * @param Session $authSession
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\App\Request\DataPersistorInterface $dataPersistor,
-        \Experius\MissingTranslations\Model\TranslationFactory $translationFactory,
-        \Experius\MissingTranslations\Helper\Data $helper,
-        \Magento\Backend\Model\Auth\Session $authSession
+        Context $context,
+        DataPersistorInterface $dataPersistor,
+        TranslationRepositoryInterface $translationRepository,
+        TranslationFactory $translationFactory,
+        Data $helper,
+        Session $authSession
     ) {
         $this->dataPersistor = $dataPersistor;
+        $this->translationRepository = $translationRepository;
         $this->translationFactory = $translationFactory;
         $this->helper = $helper;
         $this->authSession = $authSession;
@@ -78,9 +97,9 @@ class Save extends \Magento\Backend\App\Action
     /**
      * Save action
      *
-     * @return \Magento\Framework\Controller\ResultInterface
+     * @return ResultInterface
      */
-    public function execute()
+    public function execute(): ResultInterface
     {
         /**
          * Set session locale back to user interface locale to prevent interface language change after post
@@ -92,28 +111,21 @@ class Save extends \Magento\Backend\App\Action
             $this->_getSession()->setData('session_locale', $userLocale);
         }
 
-        /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
+        /** @var Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
         $data = $this->getRequest()->getPostValue();
         if ($data) {
             $id = $this->getRequest()->getParam('key_id');
 
-            $model = $this->translationFactory->create()->load($id);
-            if (!$model->getId() && $id) {
-                $this->messageManager->addError(__('This Translation no longer exists.'));
-                return $resultRedirect->setPath('*/*/');
-            }
-
-            if (!$model->getId() && !$id) {
-                $locale = $data['locale'];
-
-                $this->phrases = $this->helper->getPhrases($locale);
-
-                $line = $data['string'];
-                if (key_exists($line, $this->phrases)) {
-                    $data['string'] = $this->phrases[$line][0];
-                    $this->helper->removeFromFile($line, $locale);
+            if ($id) {
+                try {
+                    $model = $this->translationRepository->getById((int)$id);
+                }  catch (NoSuchEntityException $e) {
+                    $this->messageManager->addErrorMessage(__('This Translation no longer exists.'));
+                    return $resultRedirect->setPath('*/*/');
                 }
+            } else {
+                $model = $this->translationFactory->create();
             }
 
             $data['different'] = 1;
@@ -126,8 +138,11 @@ class Save extends \Magento\Backend\App\Action
             $model->setData($data);
 
             try {
-                $model->save();
-                $this->messageManager->addSuccess(__('You saved the Translation.'));
+                $this->translationRepository->save($model);
+                if ($model->isObjectNew()) {
+                    $this->helper->removeFromFile($data['string'], $data['locale']);
+                }
+                $this->messageManager->addSuccessMessage(__('You saved the Translation.'));
                 $this->dataPersistor->clear('experius_missingtranslations_translation');
 
                 $this->helper->updateJsTranslationJsonFiles($data['locale']);

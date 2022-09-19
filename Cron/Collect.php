@@ -7,6 +7,10 @@ declare(strict_types=1);
 
 namespace Experius\MissingTranslations\Cron;
 
+use Experius\MissingTranslations\Model\Config\Source\Locale;
+use Experius\MissingTranslations\Model\TranslationCollector;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+
 /**
  * Class Collect
  * @package Experius\MissingTranslations\Cron
@@ -17,24 +21,29 @@ class Collect
     const XML_PATH_MISSING_TRANSLATIONS_CRON = 'general/locale/cron_missing_translations';
 
     /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     * @var ScopeConfigInterface
      */
-    protected $scopeConfig;
+    protected ScopeConfigInterface $scopeConfig;
 
     /**
-     * @var \Experius\MissingTranslations\Model\Config\Source\Locale
+     * @var Locale
      */
-    protected $localeSourceModel;
+    protected Locale $localeSourceModel;
 
     /**
-     * @var \Experius\MissingTranslations\Model\TranslationCollector
+     * @var TranslationCollector
      */
-    protected $translationCollector;
+    protected TranslationCollector $translationCollector;
 
+    /**
+     * @param ScopeConfigInterface $scopeConfig
+     * @param Locale $locale
+     * @param TranslationCollector $translationCollector
+     */
     public function __construct(
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Experius\MissingTranslations\Model\Config\Source\Locale $locale,
-        \Experius\MissingTranslations\Model\TranslationCollector $translationCollector
+        ScopeConfigInterface $scopeConfig,
+        Locale $locale,
+        TranslationCollector $translationCollector
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->localeSourceModel = $locale;
@@ -44,7 +53,7 @@ class Collect
     /**
      * Executes collect cron, inserting all translations for active locales into the database on global scope
      */
-    public function existingTranslations()
+    public function existingTranslations(): void
     {
         if (!$this->scopeConfig->isSetFlag(self::XML_PATH_EXISTING_TRANSLATIONS_CRON)) {
             return;
@@ -58,7 +67,7 @@ class Collect
             $this->translationCollector->updateTranslationDatabase(
                 $storeId,
                 $locale,
-                \Experius\MissingTranslations\Model\TranslationCollector::TRANSLATION_TYPE_EXISTING
+                TranslationCollector::TRANSLATION_TYPE_EXISTING
             );
         }
     }
@@ -67,7 +76,7 @@ class Collect
      * Insert all missing translations found in missing translation files
      * for active locales into the database on global scope
      */
-    public function missingTranslations()
+    public function missingTranslations(): void
     {
         if (!$this->scopeConfig->isSetFlag(self::XML_PATH_MISSING_TRANSLATIONS_CRON)) {
             return;
@@ -81,7 +90,7 @@ class Collect
             $this->translationCollector->updateTranslationDatabase(
                 $storeId,
                 $locale,
-                \Experius\MissingTranslations\Model\TranslationCollector::TRANSLATION_TYPE_MISSING
+                TranslationCollector::TRANSLATION_TYPE_MISSING
             );
         }
     }

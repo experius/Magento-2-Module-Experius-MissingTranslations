@@ -7,6 +7,13 @@ declare(strict_types=1);
 
 namespace Experius\MissingTranslations\Model;
 
+use Experius\MissingTranslations\Helper\Data;
+use Experius\MissingTranslations\Module\I18n\Parser\Parser;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Store\Model\App\Emulation;
+use Magento\Translation\Model\ResourceModel\Translate;
+use Psr\Log\LoggerInterface;
+
 /**
  * Class TranslationCollector
  * @package Experius\MissingTranslations\Model
@@ -17,55 +24,83 @@ class TranslationCollector
     const TRANSLATION_TYPE_MISSING = 'missing';
 
     /**
-     * @var Magento\Store\Model\App\Emulation
+     * @var Emulation
      */
-    protected $emulation;
+    protected Emulation $emulation;
 
     /**
-     * @var \Experius\MissingTranslations\Module\I18n\Parser\Parser
+     * @var Parser
      */
-    protected $parser;
+    protected Parser $parser;
 
     /**
-     * @var \Experius\MissingTranslations\Model\TranslationFactory
+     * @var TranslationFactory
      */
-    protected $translationFactory;
+    protected TranslationFactory $translationFactory;
 
     /**
-     * @var \Magento\Translation\Model\ResourceModel\Translate
+     * @var Translate
      */
-    protected $translateModel;
+    protected Translate $translateModel;
 
     /**
-     * @var \Experius\MissingTranslations\Helper\Data
+     * @var Data
      */
-    protected $helper;
+    protected Data $helper;
 
+    /**
+     * @var TranslationRepository
+     */
+    protected TranslationRepository $translationRepository;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected LoggerInterface $logger;
+    /**
+     * @param Emulation $emulation
+     * @param Parser $parser
+     * @param TranslationFactory $translationFactory
+     * @param Translate $translateModel
+     * @param Data $helper
+     * @param TranslationRepository $translationRepository
+     */
     public function __construct(
-        \Magento\Store\Model\App\Emulation $emulation,
-        \Experius\MissingTranslations\Module\I18n\Parser\Parser $parser,
-        \Experius\MissingTranslations\Model\TranslationFactory $translationFactory,
-        \Magento\Translation\Model\ResourceModel\Translate $translateModel,
-        \Experius\MissingTranslations\Helper\Data $helper
+        Emulation          $emulation,
+        Parser             $parser,
+        TranslationFactory $translationFactory,
+        Translate          $translateModel,
+        Data               $helper,
+        TranslationRepository $translationRepository,
+        LoggerInterface $logger
     ) {
         $this->emulation = $emulation;
         $this->parser = $parser;
         $this->translationFactory = $translationFactory;
         $this->translateModel = $translateModel;
         $this->helper = $helper;
+        $this->translationRepository = $translationRepository;
+        $this->logger = $logger;
     }
 
-    public function updateTranslationDatabase($storeId, $locale, $translationType = '')
+    /**
+     * @param int $storeId
+     * @param string $locale
+     * @param string $translationType
+     * @return int
+     * @throws \Magento\Framework\Exception\FileSystemException
+     */
+    public function updateTranslationDatabase(int $storeId, string $locale, string $translationType = ''): int
     {
         if (!in_array($translationType, [self::TRANSLATION_TYPE_MISSING, self::TRANSLATION_TYPE_EXISTING])) {
-            return false;
+            return 0;
         }
 
         $this->emulation->startEnvironmentEmulation($storeId);
 
         if ($translationType == self::TRANSLATION_TYPE_EXISTING) {
             $translations = $this->collectTranslations($locale);
-        } elseif ($translationType == self::TRANSLATION_TYPE_MISSING) {
+        } else {
             $translations = $this->collectMissingTranslations($locale);
         }
 
@@ -73,7 +108,7 @@ class TranslationCollector
         $translations = array_diff_key($translations, $databaseTranslations);
 
         $insertionCount = $this->createNewTranslations($translations, $storeId, $locale);
-        
+
         $this->helper->updateJsTranslationJsonFiles($locale);
 
         $this->emulation->stopEnvironmentEmulation();
@@ -84,13 +119,12 @@ class TranslationCollector
      * Collect translations based on locale
      *
      * @param $locale
-     * @return mixed
+     * @return array
      */
-    public function collectTranslations($locale)
+    public function collectTranslations($locale): array
     {
         $this->parser->loadTranslations($locale);
-        $translations = $this->parser->getTranslations();
-        return $translations;
+        return $this->parser->getTranslations();
     }
 
     /**
@@ -99,7 +133,7 @@ class TranslationCollector
      * @param $locale
      * @return array
      */
-    public function collectMissingTranslations($locale)
+    public function collectMissingTranslations($locale): array
     {
         $missingPhrases = $this->helper->getPhrases($locale);
         $missingTranslations = [];
@@ -113,9 +147,11 @@ class TranslationCollector
      * Create new translations
      *
      * @param $translations
+     * @param $storeId
+     * @param $locale
      * @return int
      */
-    public function createNewTranslations($translations, $storeId, $locale)
+    public function createNewTranslations($translations, $storeId, $locale): int
     {
         $insertionCount = 0;
         foreach ($translations as $originalString => $translate) {
@@ -156,10 +192,14 @@ class TranslationCollector
             $translation = $this->translationFactory->create();
             $translation->setData($data);
             try {
-                $translation->save();
+                $this->translationRepository->save($translation);
                 $insertionCount++;
-            } catch (\Exception $exception) {
-                throw $exception;
+            } catch (LocalizedException $e) {
+                $this->logger->info(
+                    __("Could not save translation for '%1' - %2",
+                        [$originalString, $e->getMessage()]
+                    )
+                );
             }
         }
         return $insertionCount;

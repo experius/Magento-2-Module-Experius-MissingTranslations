@@ -7,7 +7,9 @@ declare(strict_types=1);
 
 namespace Experius\MissingTranslations\Model\ResourceModel;
 
-class Translation extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
+use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
+
+class Translation extends AbstractDb
 {
 
     /**
@@ -15,7 +17,7 @@ class Translation extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      *
      * @return void
      */
-    protected function _construct()
+    protected function _construct(): void
     {
         $this->_init('translation', 'key_id');
     }

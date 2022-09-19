@@ -7,10 +7,13 @@ declare(strict_types=1);
 
 namespace Experius\MissingTranslations\Model;
 
+use Experius\MissingTranslations\Api\Data\TranslationInterface;
+use Experius\MissingTranslations\Api\Data\TranslationSearchResultsInterface;
 use Experius\MissingTranslations\Api\TranslationRepositoryInterface;
 use Experius\MissingTranslations\Api\Data\TranslationSearchResultsInterfaceFactory;
 use Experius\MissingTranslations\Api\Data\TranslationInterfaceFactory;
 use Magento\Framework\Api\DataObjectHelper;
+use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Api\SortOrder;
 use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Exception\NoSuchEntityException;
@@ -18,27 +21,44 @@ use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Reflection\DataObjectProcessor;
 use Experius\MissingTranslations\Model\ResourceModel\Translation as ResourceTranslation;
 use Experius\MissingTranslations\Model\ResourceModel\Translation\CollectionFactory as TranslationCollectionFactory;
-use Magento\Store\Model\StoreManagerInterface;
 
 class TranslationRepository implements TranslationRepositoryInterface
 {
 
-    protected $resource;
+    /**
+     * @var ResourceTranslation
+     */
+    protected ResourceTranslation $resource;
 
-    protected $TranslationFactory;
+    /**
+     * @var TranslationFactory
+     */
+    protected TranslationFactory $translationFactory;
 
-    protected $TranslationCollectionFactory;
+    /**
+     * @var TranslationInterfaceFactory
+     */
+    protected TranslationInterfaceFactory $dataTranslationFactory;
 
-    protected $searchResultsFactory;
+    /**
+     * @var TranslationCollectionFactory
+     */
+    protected TranslationCollectionFactory $translationCollectionFactory;
 
-    protected $dataObjectHelper;
+    /**
+     * @var TranslationSearchResultsInterfaceFactory
+     */
+    protected TranslationSearchResultsInterfaceFactory $searchResultsFactory;
 
-    protected $dataObjectProcessor;
+    /**
+     * @var DataObjectHelper
+     */
+    protected DataObjectHelper $dataObjectHelper;
 
-    protected $dataTranslationFactory;
-
-    private $storeManager;
-
+    /**
+     * @var DataObjectProcessor
+     */
+    protected DataObjectProcessor $dataObjectProcessor;
 
     /**
      * @param ResourceTranslation $resource
@@ -48,7 +68,6 @@ class TranslationRepository implements TranslationRepositoryInterface
      * @param TranslationSearchResultsInterfaceFactory $searchResultsFactory
      * @param DataObjectHelper $dataObjectHelper
      * @param DataObjectProcessor $dataObjectProcessor
-     * @param StoreManagerInterface $storeManager
      */
     public function __construct(
         ResourceTranslation $resource,
@@ -57,30 +76,23 @@ class TranslationRepository implements TranslationRepositoryInterface
         TranslationCollectionFactory $translationCollectionFactory,
         TranslationSearchResultsInterfaceFactory $searchResultsFactory,
         DataObjectHelper $dataObjectHelper,
-        DataObjectProcessor $dataObjectProcessor,
-        StoreManagerInterface $storeManager
+        DataObjectProcessor $dataObjectProcessor
     ) {
         $this->resource = $resource;
         $this->translationFactory = $translationFactory;
+        $this->dataTranslationFactory = $dataTranslationFactory;
         $this->translationCollectionFactory = $translationCollectionFactory;
         $this->searchResultsFactory = $searchResultsFactory;
         $this->dataObjectHelper = $dataObjectHelper;
-        $this->dataTranslationFactory = $dataTranslationFactory;
         $this->dataObjectProcessor = $dataObjectProcessor;
-        $this->storeManager = $storeManager;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function save(
-        \Experius\MissingTranslations\Api\Data\TranslationInterface $translation
-    ) {
-        /* if (empty($translation->getStoreId())) {
-            $storeId = $this->storeManager->getStore()->getId();
-            $translation->setStoreId($storeId);
-        } */
+    public function save(TranslationInterface $translation): TranslationInterface {
         try {
+            /** @var $translation Translation */
             $this->resource->save($translation);
         } catch (\Exception $exception) {
             throw new CouldNotSaveException(__(
@@ -94,10 +106,10 @@ class TranslationRepository implements TranslationRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getById($translationId)
+    public function getById(int $translationId): TranslationInterface
     {
         $translation = $this->translationFactory->create();
-        $translation->load($translationId);
+        $this->resource->load($translation, $translationId);
         if (!$translation->getId()) {
             throw new NoSuchEntityException(__('Translation with id "%1" does not exist.', $translationId));
         }
@@ -108,13 +120,14 @@ class TranslationRepository implements TranslationRepositoryInterface
      * {@inheritdoc}
      */
     public function getList(
-        \Magento\Framework\Api\SearchCriteriaInterface $criteria
-    ) {
+        SearchCriteriaInterface $searchCriteria
+    ): TranslationSearchResultsInterface
+    {
         $searchResults = $this->searchResultsFactory->create();
-        $searchResults->setSearchCriteria($criteria);
-        
+        $searchResults->setSearchCriteria($searchCriteria);
+
         $collection = $this->translationCollectionFactory->create();
-        foreach ($criteria->getFilterGroups() as $filterGroup) {
+        foreach ($searchCriteria->getFilterGroups() as $filterGroup) {
             foreach ($filterGroup->getFilters() as $filter) {
                 if ($filter->getField() === 'store_id') {
                     $collection->addStoreFilter($filter->getValue(), false);
@@ -125,9 +138,8 @@ class TranslationRepository implements TranslationRepositoryInterface
             }
         }
         $searchResults->setTotalCount($collection->getSize());
-        $sortOrders = $criteria->getSortOrders();
+        $sortOrders = $searchCriteria->getSortOrders();
         if ($sortOrders) {
-            /** @var SortOrder $sortOrder */
             foreach ($sortOrders as $sortOrder) {
                 $collection->addOrder(
                     $sortOrder->getField(),
@@ -135,20 +147,20 @@ class TranslationRepository implements TranslationRepositoryInterface
                 );
             }
         }
-        $collection->setCurPage($criteria->getCurrentPage());
-        $collection->setPageSize($criteria->getPageSize());
+        $collection->setCurPage($searchCriteria->getCurrentPage());
+        $collection->setPageSize($searchCriteria->getPageSize());
         $items = [];
-        
+
         foreach ($collection as $translationModel) {
             $translationData = $this->dataTranslationFactory->create();
             $this->dataObjectHelper->populateWithArray(
                 $translationData,
                 $translationModel->getData(),
-                'Experius\MissingTranslations\Api\Data\TranslationInterface'
+                TranslationInterface::class
             );
             $items[] = $this->dataObjectProcessor->buildOutputDataArray(
                 $translationData,
-                'Experius\MissingTranslations\Api\Data\TranslationInterface'
+                TranslationInterface::class
             );
         }
         $searchResults->setItems($items);
@@ -158,10 +170,10 @@ class TranslationRepository implements TranslationRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function delete(
-        \Experius\MissingTranslations\Api\Data\TranslationInterface $translation
-    ) {
+    public function delete(TranslationInterface $translation): bool
+    {
         try {
+            /** @var $translation Translation */
             $this->resource->delete($translation);
         } catch (\Exception $exception) {
             throw new CouldNotDeleteException(__(
@@ -175,7 +187,7 @@ class TranslationRepository implements TranslationRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function deleteById($translationId)
+    public function deleteById($translationId): bool
     {
         return $this->delete($this->getById($translationId));
     }
