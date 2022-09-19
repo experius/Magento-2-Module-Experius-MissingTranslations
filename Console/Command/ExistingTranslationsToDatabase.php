@@ -7,6 +7,9 @@ declare(strict_types=1);
 
 namespace Experius\MissingTranslations\Console\Command;
 
+use Experius\MissingTranslations\Model\TranslationCollector;
+use Magento\Framework\App\State;
+use Magento\Framework\Console\Cli;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -15,6 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class ExistingTranslationsToDatabase
+ *
  * @package Experius\MissingTranslations\Console\Command
  */
 class ExistingTranslationsToDatabase extends Command
@@ -27,24 +31,24 @@ class ExistingTranslationsToDatabase extends Command
     const SHORTCUT_KEY_GLOBAL = 'g';
 
     /**
-     * @var Magento\Framework\App\State
+     * @var State
      */
-    protected $state;
+    protected State $state;
 
     /**
-     * @var \Experius\MissingTranslations\Model\TranslationCollector
+     * @var TranslationCollector
      */
-    protected $translationCollector;
+    protected TranslationCollector $translationCollector;
 
     /**
      * AddTranslationsToDatabaseCommand constructor.
      *
-     * @param \Magento\Framework\App\State $state
-     * @param \Experius\MissingTranslations\Model\TranslationCollector $translationCollector
+     * @param State $state
+     * @param TranslationCollector $translationCollector
      */
     public function __construct(
-        \Magento\Framework\App\State $state,
-        \Experius\MissingTranslations\Model\TranslationCollector $translationCollector
+        State $state,
+        TranslationCollector $translationCollector
     ) {
         $this->state = $state;
         $this->translationCollector = $translationCollector;
@@ -83,9 +87,9 @@ class ExistingTranslationsToDatabase extends Command
         $output->writeln('Still working... One moment.');
 
         $insertionCount = $this->translationCollector->updateTranslationDatabase(
-            $storeId,
+            (int)$storeId,
             $locale,
-            \Experius\MissingTranslations\Model\TranslationCollector::TRANSLATION_TYPE_EXISTING
+            TranslationCollector::TRANSLATION_TYPE_EXISTING
         );
 
         if ($insertionCount > 0) {
@@ -94,6 +98,8 @@ class ExistingTranslationsToDatabase extends Command
         } else {
             $output->writeln('Nothing was inserted. All found existing csv translations already present in database.');
         }
+
+        return Cli::RETURN_SUCCESS;
     }
 
     /**

@@ -1,10 +1,10 @@
-"Has a translation", "Has a translation"
-Missing translations cron enabled,Missing translations cron enabled
-"Database Translations", "Database Translations"
-Enable to gather all newly found existing translations into the database every night,Enable to gather all newly found existing translations into the database every night
-Enable to gather all newly found missing translations into the database every night,Enable to gather all newly found missing translations into the database every night
-Existing translations cron enabled,Existing translations cron enabled
-"Translate Missing String", "Translate Missing String"
-"Columns", "Columns"
-"Original String", "Original String"
-"Translated String", "Translated String"
+"Has a translation","Has a translation"
+"Missing translations cron enabled","Missing translations cron enabled"
+"Database Translations","Database Translations"
+"Enable to gather all newly found existing translations into the database every night","Enable to gather all newly found existing translations into the database every night"
+"Enable to gather all newly found missing translations into the database every night","Enable to gather all newly found missing translations into the database every night"
+"Existing translations cron enabled","Existing translations cron enabled"
+"Translate Missing String","Translate Missing String"
+"Columns","Columns"
+"Original String","Original String"
+"Translated String","Translated String"

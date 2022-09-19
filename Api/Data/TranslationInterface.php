@@ -16,31 +16,27 @@ interface TranslationInterface
 
     /**
      * Get translation_id
-     * @return string|null
+     * @return int|null
      */
-    
-    public function getTranslationId();
+    public function getTranslationId(): ?int;
 
     /**
      * Set translation_id
-     * @param string $translation_id
-     * @return Experius\MissingTranslations\Api\Data\TranslationInterface
+     * @param int $translationId
+     * @return TranslationInterface
      */
-    
-    public function setTranslationId($translationId);
+    public function setTranslationId(int $translationId): self;
 
     /**
      * Get key_id
-     * @return string|null
+     * @return int|null
      */
-    
-    public function getKeyId();
+    public function getKeyId(): ?int;
 
     /**
-     * Set key_id
-     * @param string $key_id
-     * @return Experius\MissingTranslations\Api\Data\TranslationInterface
+     * Set translation_id
+     * @param int $key_id
+     * @return TranslationInterface
      */
-    
-    public function setKeyId($key_id);
+    public function setKeyId(int $key_id): self;
 }

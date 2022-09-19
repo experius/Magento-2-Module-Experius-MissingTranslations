@@ -9,20 +9,16 @@ namespace Experius\MissingTranslations\Api\Data;
 
 interface TranslationSearchResultsInterface extends \Magento\Framework\Api\SearchResultsInterface
 {
-
-
     /**
      * Get Translation list.
      * @return \Experius\MissingTranslations\Api\Data\TranslationInterface[]
      */
-    
-    public function getItems();
+    public function getItems(): array;
 
     /**
      * Set key_id list.
      * @param \Experius\MissingTranslations\Api\Data\TranslationInterface[] $items
      * @return $this
      */
-    
-    public function setItems(array $items);
+    public function setItems(array $items): self;
 }

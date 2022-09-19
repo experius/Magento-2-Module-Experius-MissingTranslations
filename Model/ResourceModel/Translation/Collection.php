@@ -7,7 +7,9 @@ declare(strict_types=1);
 
 namespace Experius\MissingTranslations\Model\ResourceModel\Translation;
 
-class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
+use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
+
+class Collection extends AbstractCollection
 {
 
     /**
@@ -15,7 +17,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
      *
      * @return void
      */
-    protected function _construct()
+    protected function _construct(): void
     {
         $this->_init(
             'Experius\MissingTranslations\Model\Translation',

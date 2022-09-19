@@ -1,5 +1,9 @@
 <?xml version="1.0" ?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Experius\MissingTranslations\Api\TranslationRepositoryInterface"
+                type="Experius\MissingTranslations\Model\TranslationRepository"/>
+    <preference for="Experius\MissingTranslations\Api\Data\TranslationInterface"
+                type="Experius\MissingTranslations\Model\Translation"/>
 	<virtualType name="Experius\MissingTranslations\Model\ResourceModel\Translation\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
 		<arguments>
 			<argument name="mainTable" xsi:type="string">translation</argument>

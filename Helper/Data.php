@@ -7,46 +7,89 @@ declare(strict_types=1);
 
 namespace Experius\MissingTranslations\Helper;
 
+use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Framework\App\Helper\Context;
+use Magento\Framework\App\View\Deployment\Version\StorageInterface;
+use Magento\Framework\Exception\FileSystemException;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\File\Csv;
+use Magento\Framework\Filesystem\Driver\File;
+use Magento\Framework\Filesystem\Io\File as IoFile;
+use Magento\Framework\Serialize\Serializer\Json;
+use Magento\Framework\Stdlib\DateTime\DateTime;
+use Magento\Framework\Translate\ResourceInterface;
+use Magento\Framework\View\Design\Theme\ThemePackageList;
+use Magento\Translation\Model\Js\Config;
+use Psr\Log\LoggerInterface;
+
 /**
  * Class Data
  * @package Experius\MissingTranslations\Helper
  */
-class Data extends \Magento\Framework\App\Helper\AbstractHelper
+class Data extends AbstractHelper
 {
-    /**
-     * @var array
-     */
-    protected $phrases = [];
-
-    /**
-     * @var \Magento\Framework\App\Filesystem\DirectoryList
-     */
-    protected $directoryList;
-
-    /**
-     * @var \Magento\Framework\Filesystem\Driver\File
-     */
-    protected $driverFile;
-
-    /**
-     * @var \Magento\Framework\Translate\ResourceInterface
-     */
-    protected $translateResource;
-
-    /**
-     * @var \Magento\Framework\App\View\Deployment\Version\StorageInterface
-     */
-    protected $versionStorage;
-
-    /**
-     * @var \Magento\Framework\View\Design\Theme\ThemePackageList
-     */
-    protected $themePackageList;
+    const CONFIG_PATH_LANGUAGE_VENDOR = 'general/locale/language_vendor';
 
     /**
      * @var array
      */
-    protected $filters = [
+    protected array $phrases = [];
+
+    /**
+     * @var DirectoryList
+     */
+    protected DirectoryList $directoryList;
+
+    /**
+     * @var File
+     */
+    protected File $driverFile;
+
+    /**
+     * @var ResourceInterface
+     */
+    protected ResourceInterface $translateResource;
+
+    /**
+     * @var StorageInterface
+     */
+    protected StorageInterface $versionStorage;
+
+    /**
+     * @var ThemePackageList
+     */
+    protected ThemePackageList $themePackageList;
+
+    /**
+     * @var IoFile
+     */
+    protected IoFile $file;
+
+    /**
+     * @var Json
+     */
+    protected Json $json;
+
+    /**
+     * @var Csv
+     */
+    protected Csv $csvProcessor;
+
+    /**
+     * @var DateTime
+     */
+    protected DateTime $dateTime;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected LoggerInterface $logger;
+
+    /**
+     * @var array
+     */
+    protected array $filters = [
         'url-rewrite',
         'admin',
         'cron',
@@ -80,23 +123,41 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
     /**
      * Data constructor.
-     * @param \Magento\Framework\App\Helper\Context $context
-     * @param \Magento\Framework\App\Filesystem\DirectoryList $directoryList
-     * @param \Magento\Framework\App\View\Deployment\Version\StorageInterface $versionStorage
+     * @param Context $context
+     * @param DirectoryList $directoryList
+     * @param File $driverFile
+     * @param ResourceInterface $translateResource
+     * @param StorageInterface $versionStorage
+     * @param ThemePackageList $themePackageList
+     * @param IoFile $file
+     * @param Json $json
+     * @param Csv $csvProcessor
+     * @param DateTime $dateTime
+     * @param LoggerInterface $logger
      */
     public function __construct(
-        \Magento\Framework\App\Helper\Context $context,
-        \Magento\Framework\App\Filesystem\DirectoryList $directoryList,
-        \Magento\Framework\Filesystem\Driver\File $driverFile,
-        \Magento\Framework\Translate\ResourceInterface $translateResource,
-        \Magento\Framework\App\View\Deployment\Version\StorageInterface $versionStorage,
-        \Magento\Framework\View\Design\Theme\ThemePackageList $themePackageList
+        Context $context,
+        DirectoryList $directoryList,
+        File $driverFile,
+        ResourceInterface $translateResource,
+        StorageInterface $versionStorage,
+        ThemePackageList $themePackageList,
+        IoFile $file,
+        Json $json,
+        Csv $csvProcessor,
+        DateTime $dateTime,
+        LoggerInterface $logger
     ) {
         $this->directoryList = $directoryList;
         $this->driverFile = $driverFile;
         $this->translateResource = $translateResource;
         $this->versionStorage = $versionStorage;
         $this->themePackageList = $themePackageList;
+        $this->file = $file;
+        $this->json = $json;
+        $this->csvProcessor = $csvProcessor;
+        $this->dateTime = $dateTime;
+        $this->logger = $logger;
 
         parent::__construct($context);
     }
@@ -106,44 +167,53 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      *
      * @return string
      */
-    public function getLanguageVendor()
+    public function getLanguageVendor(): string
     {
-        return $this->scopeConfig->getValue('general/locale/language_vendor', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return $this->scopeConfig->getValue(static::CONFIG_PATH_LANGUAGE_VENDOR);
     }
 
     /**
      * Get translation phrases from missing translation files (if generated)
      *
+     * @param string $locale
      * @return array
      */
-    public function getPhrases($locale = 'en_US')
+    public function getPhrases(string $locale = 'en_US'): array
     {
-        $this->phrases = [];
-        $filename = $this->getFileName($locale);
-        if ($filename) {
-            $this->phrases = array_map('str_getcsv', file($filename));
+        try {
+            if (empty($this->phrases[$locale]) && $filename = $this->getFileName($locale)) {
+                $this->phrases[$locale] = $this->csvProcessor->getData($filename);
+            } else {
+                return [];
+            }
+        } catch (\Exception $e) {
+            // Should not occur, since $this->getFileName() will already validate file existence
+            return [];
         }
-        return $this->phrases;
+        return $this->phrases[$locale];
     }
 
     /**
      * Remove translation line from missing translation file
      *
-     * @param bool $line
+     * @param string $string
      * @param string $locale
      */
-    public function removeFromFile($line = false, $locale = 'en_US')
+    public function removeFromFile(string $string, string $locale = 'en_US'): void
     {
-        if ($line) {
-            $filename = $this->getFileName($locale);
+        $filename = $this->getFileName($locale);
+        try {
             if ($filename) {
-                $lines = file($filename);
-                unset($lines[$line]);
-                // write the new data to the file
-                $fp = fopen($filename, 'w');
-                fwrite($fp, implode('', $lines));
-                fclose($fp);
+                $lines = $this->csvProcessor->getData($filename);
+                foreach ($lines as $n => $line) {
+                    if ($line[0] === $string) {
+                        unset($lines[$n]);
+                    }
+                }
+                $this->csvProcessor->appendData($filename, $lines);
             }
+        } catch (\Exception $e) {
+            // Should not occur, since $this->getFileName() will already validate file existence
         }
     }
 
@@ -152,32 +222,52 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      *
      * @param string $locale
      * @param bool $requiredExists
-     * @return bool|string
+     * @return string|null
      */
-    public function getFileName($locale = 'en_US', $requiredExists = true)
+    public function getFileName(string $locale = 'en_US', bool $requiredExists = true): ?string
+    {
+        $directoryPath = $this->getTranslationDirectory();
+        if ($directoryPath) {
+            $filename = $directoryPath . $locale . '.csv';
+            return (!$requiredExists || $this->file->fileExists($filename)) ? $filename : null;
+        }
+        return null;
+    }
+
+    protected function getTranslationDirectory(): ?string
     {
         $vendor = $this->getLanguageVendor();
         $directoryPath = $this->directoryList->getRoot() . '/app/i18n/' . $vendor . '/missing/';
-        if (!is_dir($directoryPath)) {
-            @mkdir($directoryPath, 0777, true);
-        }
-        // Fallback for e.g., Magento Cloud, where /app directory has no write access
-        if (!is_dir($directoryPath)) {
+        try {
+            $result = $this->file->checkAndCreateFolder($directoryPath);
+        } catch (LocalizedException $e) {
+            /**
+             * Magento will throw exception when app directory is not writable for Magento Cloud,
+             * so use var instead
+             */
             $directoryPath = $this->directoryList->getRoot() . '/var/i18n/' . $vendor . '/missing/';
-            if (!is_dir($directoryPath)) {
-                @mkdir($directoryPath, 0777, true);
+            try {
+                $result = $this->file->checkAndCreateFolder($directoryPath);
+            } catch (LocalizedException $e) {
+                $this->logger->error(
+                    __(
+                        'Failed to create translation directory at %1 - %2',
+                        [
+                            $directoryPath,
+                            $e->getMessage()
+                        ]
+                    )
+                );
+                return null;
             }
         }
-
-        $filename = $directoryPath . $locale . '.csv';
-
-        return (file_exists($filename) || $requiredExists == false) ? $filename : false;
+        return $result ? $directoryPath : null;
     }
 
     /**
      * @return array
      */
-    public function getFilters()
+    public function getFilters(): array
     {
         return $this->filters;
     }

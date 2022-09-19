@@ -7,6 +7,10 @@ declare(strict_types=1);
 
 namespace Experius\MissingTranslations\Console\Command;
 
+use Experius\MissingTranslations\Helper\Data;
+use Magento\Framework\App\State;
+use Magento\Framework\Console\Cli;
+use Magento\Store\Model\App\Emulation;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -16,6 +20,7 @@ use Experius\MissingTranslations\Module\I18n\ServiceLocator;
 
 /**
  * Class CollectMissingTranslationsCommand
+ *
  * @package Experius\MissingTranslations\Console\Command
  */
 class CollectMissingTranslationsCommand extends Command
@@ -29,30 +34,31 @@ class CollectMissingTranslationsCommand extends Command
     const SHORTCUT_KEY_STORE = 's';
 
     /**
-     * @var Magento\Store\Model\App\Emulation
+     * @var Emulation
      */
-    protected $emulation;
+    protected Emulation $emulation;
 
     /**
-     * @var Magento\Framework\App\State
+     * @var State
      */
-    protected $state;
+    protected State $state;
 
     /**
-     * @var Experius\MissingTranslations\Helper\Data
+     * @var Data
      */
-    protected $helper;
+    protected Data $helper;
 
     /**
      * CollectMissingTranslationsCommand constructor.
-     * @param \Magento\Store\Model\App\Emulation $emulation
-     * @param \Magento\Framework\App\State $state
-     * @param \Experius\MissingTranslations\Helper\Data $helper
+     *
+     * @param Emulation $emulation
+     * @param State $state
+     * @param Data $helper
      */
     public function __construct(
-        \Magento\Store\Model\App\Emulation $emulation,
-        \Magento\Framework\App\State $state,
-        \Experius\MissingTranslations\Helper\Data $helper
+        Emulation $emulation,
+        State $state,
+        Data $helper
     ) {
         $this->emulation = $emulation;
         $this->state = $state;
@@ -74,6 +80,9 @@ class CollectMissingTranslationsCommand extends Command
         } elseif (!$input->getArgument(self::INPUT_KEY_DIRECTORY)) {
             throw new \InvalidArgumentException('Directory path is needed when --magento flag is not set.');
         }
+        if (!$input->getOption(self::INPUT_KEY_LOCALE)) {
+            throw new \InvalidArgumentException('Locale is not set. Please use --locale to set locale');
+        }
         $generator = ServiceLocator::getDictionaryGenerator();
         $this->state->setAreaCode('frontend');
         $this->emulation->startEnvironmentEmulation($input->getOption(self::INPUT_KEY_STORE));
@@ -87,6 +96,8 @@ class CollectMissingTranslationsCommand extends Command
         );
         $this->emulation->stopEnvironmentEmulation();
         $output->writeln('<info>Collected Missing Translations for specified store and stored in ' . $fileName . ' </info>');
+
+        return Cli::RETURN_SUCCESS;
     }
 
     /**

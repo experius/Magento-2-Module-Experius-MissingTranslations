@@ -258,7 +258,7 @@ class Phrase
      */
     public function getCompiledTranslation()
     {
-        return $this->getCompiledString($this->getTranslation());
+        return $this->getCompiledString($this->getTranslation() ?: '');
     }
 
     /**
@@ -267,7 +267,7 @@ class Phrase
      * @param string $string
      * @return string
      */
-    private function getCompiledString($string)
+    private function getCompiledString(string $string)
     {
         $encloseQuote = $this->getQuote() == Phrase::QUOTE_DOUBLE ? Phrase::QUOTE_DOUBLE : Phrase::QUOTE_SINGLE;
         /* Find all occurrences of ' and ", with no \ before it for concatenation */
@@ -277,8 +277,8 @@ class Phrase
         }
         /* Remove all occurrences of escaped quotes because it is not desirable in csv file.
            Translation for such phrases will use translation for phrase without escaped quote. */
-        $string = str_replace('\"', '"', $string);
-        $string = str_replace("\\'", "'", $string);
+        $string = str_replace('\"', '"', (string)$string);
+        $string = str_replace("\\'", "'", (string)$string);
         return $string;
     }
 }

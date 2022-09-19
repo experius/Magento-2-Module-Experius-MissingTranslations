@@ -18,11 +18,16 @@
     {
       "name": "Boris van Katwijk",
       "email": "boris@experius.nl"
+    },
+    {
+      "name": "Matthijs Breed",
+      "email": "matthijs.breed@experius.nl"
     }
   ],
   "minimum-stability": "dev",
   "require": {
-    "experius/module-formselectchosen": "1.0.*"
+    "experius/module-formselectchosen": "1.0.*",
+    "php": "^7.4"
   },
   "autoload": {
     "psr-4": {

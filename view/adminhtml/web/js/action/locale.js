@@ -33,8 +33,9 @@ define(
                 selectBox.append(new Option("", ""), false);
                 chosenResults.append("<li></li>", false);
                 $.each(data,function(index,itemData) {
-                    chosenResults.append("<li data-option-array-index='" + index + "'>" + itemData[0] + " (" + itemData[3] + ")</li>",false);
-                    selectBox.append(new Option(itemData[0] + ' (' + itemData[3] + ")", index), false);
+                    console.log(itemData);
+                    chosenResults.append("<li data-option-array-index='" + itemData[0] + "'>" + itemData[0] + " (" + itemData[3] + ")</li>",false);
+                    selectBox.append(new Option(itemData[0] + ' (' + itemData[3] + ")", itemData[0]), false);
                 });
                 selectBox.val('').trigger("chosen:updated");
             })
