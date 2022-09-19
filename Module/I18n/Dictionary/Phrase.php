@@ -277,8 +277,8 @@ class Phrase
         }
         /* Remove all occurrences of escaped quotes because it is not desirable in csv file.
            Translation for such phrases will use translation for phrase without escaped quote. */
-        $string = str_replace('\"', '"', $string);
-        $string = str_replace("\\'", "'", $string);
+        $string = str_replace('\"', '"', (string)$string);
+        $string = str_replace("\\'", "'", (string)$string);
         return $string;
     }
 }
