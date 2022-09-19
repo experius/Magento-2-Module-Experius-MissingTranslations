@@ -85,7 +85,7 @@ class MissingTranslationsToDatabase extends Command
         $output->writeln('Still working... One moment.');
 
         $insertionCount = $this->translationCollector->updateTranslationDatabase(
-            $storeId,
+            (int)$storeId,
             $locale,
             TranslationCollector::TRANSLATION_TYPE_MISSING
         );
