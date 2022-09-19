@@ -9,6 +9,7 @@ namespace Experius\MissingTranslations\Console\Command;
 
 use Experius\MissingTranslations\Model\TranslationCollector;
 use Magento\Framework\App\State;
+use Magento\Framework\Console\Cli;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -17,6 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class MissingTranslationsToDatabase
+ *
  * @package Experius\MissingTranslations\Console\Command
  */
 class MissingTranslationsToDatabase extends Command
@@ -96,6 +98,8 @@ class MissingTranslationsToDatabase extends Command
         } else {
             $output->writeln('Nothing was inserted. All found missing translations already present in database.');
         }
+
+        return Cli::RETURN_SUCCESS;
     }
 
     /**

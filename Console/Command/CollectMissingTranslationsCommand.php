@@ -9,6 +9,7 @@ namespace Experius\MissingTranslations\Console\Command;
 
 use Experius\MissingTranslations\Helper\Data;
 use Magento\Framework\App\State;
+use Magento\Framework\Console\Cli;
 use Magento\Store\Model\App\Emulation;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -19,6 +20,7 @@ use Experius\MissingTranslations\Module\I18n\ServiceLocator;
 
 /**
  * Class CollectMissingTranslationsCommand
+ *
  * @package Experius\MissingTranslations\Console\Command
  */
 class CollectMissingTranslationsCommand extends Command
@@ -48,6 +50,7 @@ class CollectMissingTranslationsCommand extends Command
 
     /**
      * CollectMissingTranslationsCommand constructor.
+     *
      * @param Emulation $emulation
      * @param State $state
      * @param Data $helper
@@ -93,6 +96,8 @@ class CollectMissingTranslationsCommand extends Command
         );
         $this->emulation->stopEnvironmentEmulation();
         $output->writeln('<info>Collected Missing Translations for specified store and stored in ' . $fileName . ' </info>');
+
+        return Cli::RETURN_SUCCESS;
     }
 
     /**
