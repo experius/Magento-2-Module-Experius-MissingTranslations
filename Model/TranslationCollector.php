@@ -109,8 +109,6 @@ class TranslationCollector
 
         $insertionCount = $this->createNewTranslations($translations, $storeId, $locale);
 
-        $this->helper->updateJsTranslationJsonFiles($locale);
-
         $this->emulation->stopEnvironmentEmulation();
         return $insertionCount;
     }

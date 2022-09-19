@@ -163,50 +163,6 @@ class Data extends AbstractHelper
     }
 
     /**
-     * Update js-translation.json files in static content for specific locale
-     * @param string|null $locale
-     * @throws FileSystemException
-     */
-    public function updateJsTranslationJsonFiles(?string $locale = null): void
-    {
-        if (!$locale) {
-            return;
-        }
-
-        $translations = $this->translateResource->getTranslationArray(null, $locale);
-        $translationsJson = $this->json->serialize($translations);
-
-        $themes = $this->themePackageList->getThemes();
-
-        $staticVersionUpdateRequired = false;
-        foreach (array_keys($themes) as $relativePath) {
-            $jsonFilePath = $this->directoryList->getPath(DirectoryList::STATIC_VIEW) .
-                DIRECTORY_SEPARATOR .
-                $relativePath .
-                DIRECTORY_SEPARATOR .
-                $locale .
-                DIRECTORY_SEPARATOR .
-                Config::DICTIONARY_FILE_NAME;
-            if ($this->driverFile->isExists($jsonFilePath)) {
-                $this->driverFile->filePutContents($jsonFilePath, $translationsJson);
-                $staticVersionUpdateRequired = true;
-            }
-        }
-
-        if ($staticVersionUpdateRequired) {
-            $this->updateStaticVersionNumber();
-        }
-    }
-
-    /**
-     * Updated static content version number
-     */
-    public function updateStaticVersionNumber(): void
-    {
-        $this->versionStorage->save($this->dateTime->timestamp());
-    }
-
-    /**
      * Get language vendor from configuration for current store
      *
      * @return string

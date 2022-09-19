@@ -145,8 +145,6 @@ class Save extends \Magento\Backend\App\Action
                 $this->messageManager->addSuccessMessage(__('You saved the Translation.'));
                 $this->dataPersistor->clear('experius_missingtranslations_translation');
 
-                $this->helper->updateJsTranslationJsonFiles($data['locale']);
-
                 if ($this->getRequest()->getParam('back')) {
                     return $resultRedirect->setPath('*/*/edit', ['key_id' => $model->getId()]);
                 }
