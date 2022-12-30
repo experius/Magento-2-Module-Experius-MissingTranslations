@@ -15,6 +15,7 @@ use Magento\Backend\Model\Auth\Session;
 use Magento\Backend\Model\View\Result\Redirect;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Locale\ResolverInterface;
@@ -124,6 +125,14 @@ class Save extends \Magento\Backend\App\Action
                     $this->messageManager->addErrorMessage(__('This Translation no longer exists.'));
                     return $resultRedirect->setPath('*/*/');
                 }
+
+                //Identify a request coming from /duplicate by submitted store_id not matching to the model's store_id
+                //This also means that if you duplicate a translation but don't change the store_id it will act as if it was an edit
+                if($this->getRequest()->getParam('store_id') != $model->getData('store_id')) {
+                    $model = $this->translationFactory->create();
+                    unset($data['key_id']);
+                }
+
             } else {
                 $model = $this->translationFactory->create();
             }
@@ -149,6 +158,9 @@ class Save extends \Magento\Backend\App\Action
                     return $resultRedirect->setPath('*/*/edit', ['key_id' => $model->getId()]);
                 }
                 return $resultRedirect->setPath('*/*/');
+            } catch (CouldNotSaveException $e) {
+                $this->messageManager->addError("You cannot have 2 translations set for the same string on the same store ID");
+                return $resultRedirect->setPath('*/*/duplicate', ['key_id' => $this->getRequest()->getParam('key_id')]);
             } catch (LocalizedException $e) {
                 $this->messageManager->addError($e->getMessage());
             } catch (\Exception $e) {

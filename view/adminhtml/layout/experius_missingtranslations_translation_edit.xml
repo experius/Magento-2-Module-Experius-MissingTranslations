@@ -3,7 +3,7 @@
 	<update handle="styles"/>
 	<body>
 		<referenceContainer name="content">
-			<uiComponent name="experius_translation_form"/>
+			<uiComponent name="experius_translation_form_edit"/>
 		</referenceContainer>
 	</body>
 </page>

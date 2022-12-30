@@ -21,6 +21,7 @@ class TranslationActions extends Column
 
     const URL_PATH_EDIT = 'experius_missingtranslations/translation/edit';
     const URL_PATH_DELETE = 'experius_missingtranslations/translation/delete';
+    const URL_PATH_DUPLICATE = 'experius_missingtranslations/translation/duplicate';
 
     /**
      * @var UrlInterface
@@ -78,7 +79,17 @@ class TranslationActions extends Column
                                 'title' => __('Delete Translation'),
                                 'message' => __('Are you sure you want to delete this translation?')
                             ]
+                        ],
+                        'duplicate' => [
+                            'href' => $this->urlBuilder->getUrl(
+                                static::URL_PATH_DUPLICATE,
+                                [
+                                    'key_id' => $item['key_id']
+                                ]
+                            ),
+                            'label' => __('Duplicate'),
                         ]
+
                     ];
                 }
             }
