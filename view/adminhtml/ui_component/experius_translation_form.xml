@@ -60,24 +60,21 @@
 				</item>
 			</argument>
 		</field>
-		<field name="store_id">
-			<argument name="data" xsi:type="array">
-				<item name="options" xsi:type="object">Experius\MissingTranslations\Ui\Component\Listing\Column\Store</item>
-				<item name="config" xsi:type="array">
-					<item name="dataType" xsi:type="string">text</item>
-					<item name="label" translate="true" xsi:type="string">Store</item>
-					<item name="formElement" xsi:type="string">select</item>
-					<item name="source" xsi:type="string">Translation</item>
-					<item name="sortOrder" xsi:type="number">20</item>
-					<item name="dataScope" xsi:type="string">store_id</item>
-					<item name="validation" xsi:type="array">
-						<item name="required-entry" xsi:type="boolean">true</item>
-					</item>
-					<item name="component" xsi:type="string">Magento_Catalog/js/components/disable-on-option/select</item>
-					<item name="notice" xsi:type="string" translate="true">The Store can not changed after being set.</item>
-				</item>
-			</argument>
-		</field>
+        <field name="store_id">
+            <argument name="data" xsi:type="array">
+                <item name="options" xsi:type="object">Experius\MissingTranslations\Ui\Component\Listing\Column\Store</item>
+                <item name="config" xsi:type="array">
+                    <item name="dataType" xsi:type="string">text</item>
+                    <item name="label" translate="true" xsi:type="string">Store</item>
+                    <item name="formElement" xsi:type="string">select</item>
+                    <item name="source" xsi:type="string">translation</item>
+                    <item name="dataScope" xsi:type="string">store_id</item>
+                    <item name="validation" xsi:type="array">
+                        <item name="required-entry" xsi:type="boolean">true</item>
+                    </item>
+                </item>
+            </argument>
+        </field>
 		<field name="string">
 			<argument name="data" xsi:type="array">
 				<item name="config" xsi:type="array">
