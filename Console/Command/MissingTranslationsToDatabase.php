@@ -60,7 +60,8 @@ class MissingTranslationsToDatabase extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->state->setAreaCode('frontend');
+        // DOES NOT WORK FOR MAGENTO 2.4.5
+//        $this->state->setAreaCode('frontend');
 
         if (!$input->getOption(self::INPUT_KEY_LOCALE)) {
             throw new \InvalidArgumentException('Locale is not set. Please use --locale to set locale');
