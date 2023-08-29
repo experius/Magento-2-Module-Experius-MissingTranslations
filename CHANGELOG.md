@@ -1,3 +1,17 @@
+## 4.0.3 (2023-08-29)
+
+[View Release](git@github.com:experius/Magento-2-Module-Experius-MissingTranslations.git/commits/tag/4.0.3)
+
+*  [FEATURE][RM-811] reintroduced set area code for console commands *(Dylan Maurits)*
+
+
+## 4.0.2 (2023-03-07)
+
+[View Release](git@github.com:experius/Magento-2-Module-Experius-MissingTranslations.git/commits/tag/4.0.2)
+
+*  [FEATURE][PPC-863] Fixed console commands *(Quinn Stadens)*
+
+
 ## 4.0.1 (2022-09-22)
 
 [View Release](git@github.com:experius/Magento-2-Module-Experius-MissingTranslations.git/commits/tag/4.0.1)
