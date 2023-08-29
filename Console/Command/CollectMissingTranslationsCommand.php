@@ -84,8 +84,7 @@ class CollectMissingTranslationsCommand extends Command
             throw new \InvalidArgumentException('Locale is not set. Please use --locale to set locale');
         }
         $generator = ServiceLocator::getDictionaryGenerator();
-        // DOES NOT WORK FOR MAGENTO 2.4.5
-//        $this->state->setAreaCode('frontend');
+        $this->state->setAreaCode('frontend');
         $this->emulation->startEnvironmentEmulation($input->getOption(self::INPUT_KEY_STORE));
 
         $fileName = $this->helper->getFileName($input->getOption(self::INPUT_KEY_LOCALE), false);
