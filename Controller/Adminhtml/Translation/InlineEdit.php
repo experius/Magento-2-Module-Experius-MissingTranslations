@@ -98,7 +98,6 @@ class InlineEdit extends Action
                         $model->setData(array_merge($data, $postItems[$modelId]));
                         $this->translationRepository->save($model);
 
-                        $this->helper->updateJsTranslationJsonFiles($data['locale']);
                     } catch (LocalizedException $e) {
                         $messages[] = "[Translation ID: {$modelId}]  {$e->getMessage()}";
                         $error = true;
