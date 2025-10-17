@@ -42,7 +42,7 @@
 				<item name="label" xsi:type="string">Update Translation</item>
 			</item>
 		</argument>
-		<field name="locale">
+		<field name="locale_to_translate">
 			<argument name="data" xsi:type="array">
 				<item name="options" xsi:type="object">Experius\MissingTranslations\Model\Config\Source\Locale</item>
 				<item name="config" xsi:type="array">
@@ -51,7 +51,7 @@
 					<item name="formElement" xsi:type="string">select</item>
 					<item name="source" xsi:type="string">Translation</item>
 					<item name="sortOrder" xsi:type="number">10</item>
-					<item name="dataScope" xsi:type="string">locale</item>
+					<item name="dataScope" xsi:type="string">locale_to_translate</item>
 					<item name="validation" xsi:type="array">
 						<item name="required-entry" xsi:type="boolean">true</item>
 					</item>

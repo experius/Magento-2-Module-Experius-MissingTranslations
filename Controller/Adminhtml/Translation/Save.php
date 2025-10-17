@@ -128,6 +128,11 @@ class Save extends \Magento\Backend\App\Action
                 $model = $this->translationFactory->create();
             }
 
+            // Map locale_to_translate to locale for backward compatibility
+            if (isset($data['locale_to_translate'])) {
+                $data['locale'] = $data['locale_to_translate'];
+            }
+
             $data['different'] = 1;
             if (isset($data['string']) && isset($data['translate'])
                 && $data['string'] == $data['translate']

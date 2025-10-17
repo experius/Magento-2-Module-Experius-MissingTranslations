@@ -7,74 +7,80 @@ declare(strict_types=1);
 
 namespace Experius\MissingTranslations\Controller\Adminhtml\Ajax;
 
-use Experius\MissingTranslations\Helper\Data;
 use Magento\Backend\App\Action;
-use Magento\Backend\Model\UrlInterface;
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\View\Result\PageFactory;
+use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\App\ResourceConnection;
 
 class Phrases extends Action
 {
-    /**
-     * @var PageFactory
-     */
-    protected PageFactory $resultPageFactory;
+    const ADMIN_RESOURCE = 'Experius_MissingTranslations::Translation_view';
 
     /**
-     * @var Json
+     * @var JsonFactory
      */
-    protected Json $jsonHelper;
+    protected $jsonFactory;
 
     /**
-     * @var UrlInterface
+     * @var ResourceConnection
      */
-    protected UrlInterface $urlBuilder;
-
-    /**
-     * @var Data
-     */
-    protected Data $helper;
+    protected $resourceConnection;
 
     /**
      * @param Context $context
-     * @param PageFactory $resultPageFactory
-     * @param Json $jsonHelper
-     * @param Data $helper
-     * @param UrlInterface $urlBuilder
+     * @param JsonFactory $jsonFactory
+     * @param ResourceConnection $resourceConnection
      */
     public function __construct(
         Context $context,
-        PageFactory $resultPageFactory,
-        Json $jsonHelper,
-        Data $helper,
-        UrlInterface $urlBuilder
+        JsonFactory $jsonFactory,
+        ResourceConnection $resourceConnection
     ) {
-        $this->resultPageFactory = $resultPageFactory;
-        $this->jsonHelper = $jsonHelper;
-        $this->helper = $helper;
-        $this->urlBuilder = $urlBuilder;
+        $this->jsonFactory = $jsonFactory;
+        $this->resourceConnection = $resourceConnection;
         parent::__construct($context);
     }
 
-
-    public function execute(): ResponseInterface
+    /**
+     * Execute action
+     *
+     * @return \Magento\Framework\Controller\Result\Json
+     */
+    public function execute()
     {
+        $resultJson = $this->jsonFactory->create();
+        
         try {
-            $phrases = $this->helper->getPhrases($this->getRequest()->getParam('locale'));
-            return $this->jsonResponse($phrases);
+            $localeToTranslate = $this->getRequest()->getParam('locale_to_translate');
+            
+            if (!$localeToTranslate) {
+                return $resultJson->setData([]);
+            }
+
+            $connection = $this->resourceConnection->getConnection();
+            $tableName = $this->resourceConnection->getTableName('experius_missingtranslations_translation');
+            
+            $select = $connection->select()
+                ->from($tableName, ['string', 'translate', 'store_id', 'locale'])
+                ->where('locale = ?', $localeToTranslate)
+                ->where('translate IS NOT NULL AND translate != ""');
+                
+            $results = $connection->fetchAll($select);
+            
+            $data = [];
+            foreach ($results as $row) {
+                $data[] = [
+                    $row['string'],
+                    $row['translate'],
+                    $row['store_id'],
+                    $row['locale']
+                ];
+            }
+            
+            return $resultJson->setData($data);
+            
         } catch (\Exception $e) {
-            $this->messageManager->addErrorMessage(__("Failed to get Phrases : %1", [$e->getMessage()]));
-            return $this->jsonResponse([]);
+            return $resultJson->setData([]);
         }
-    }
-
-
-    public function jsonResponse(array $response = []): ResponseInterface
-    {
-        return $this->getResponse()->representJson(
-            $this->jsonHelper->serialize($response)
-        );
     }
 }
