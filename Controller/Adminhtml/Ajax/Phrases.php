@@ -58,12 +58,12 @@ class Phrases extends Action
             }
 
             $connection = $this->resourceConnection->getConnection();
-            $tableName = $this->resourceConnection->getTableName('experius_missingtranslations_translation');
+            $tableName = $this->resourceConnection->getTableName('translation');
             
             $select = $connection->select()
                 ->from($tableName, ['string', 'translate', 'store_id', 'locale'])
                 ->where('locale = ?', $localeToTranslate)
-                ->where('translate IS NOT NULL AND translate != ""');
+                ->where('(translate IS NULL OR translate = "" OR translate = string)');
                 
             $results = $connection->fetchAll($select);
             

@@ -11,6 +11,7 @@ define([
             return this;
         },
         hasChanged: function () {
+            this._super();
             this.applyDependencies();
             return this;
         },
