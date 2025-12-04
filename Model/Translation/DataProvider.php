@@ -67,14 +67,22 @@ class DataProvider extends AbstractDataProvider
         }
         foreach ($this->collection->getItems() as $model) {
             /** @var $model Translation */
-            $this->loadedData[$model->getId()] = $model->getData();
+            $modelData = $model->getData();
+            if (isset($modelData['locale']) && !isset($modelData['locale_to_translate'])) {
+                $modelData['locale_to_translate'] = $modelData['locale'];
+            }
+            $this->loadedData[$model->getId()] = $modelData;
         }
         $data = $this->dataPersistor->get('experius_missingtranslations_translation');
 
         if (!empty($data)) {
             $model = $this->collection->getNewEmptyItem();
             $model->setData($data);
-            $this->loadedData[$model->getId()] = $model->getData();
+            $modelData = $model->getData();
+            if (isset($modelData['locale']) && !isset($modelData['locale_to_translate'])) {
+                $modelData['locale_to_translate'] = $modelData['locale'];
+            }
+            $this->loadedData[$model->getId()] = $modelData;
             $this->dataPersistor->clear('experius_missingtranslations_translation');
         }
 
