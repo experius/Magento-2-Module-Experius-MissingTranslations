@@ -58,8 +58,7 @@ class MissingTranslationsToDatabase extends Command
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
+    protected function execute(InputInterface $input, OutputInterface $output): int {
         $this->state->setAreaCode('frontend');
 
         if (!$input->getOption(self::INPUT_KEY_LOCALE)) {
